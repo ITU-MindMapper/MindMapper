@@ -1,2 +1,2 @@
 # MindMapper
-Professional software for mind mapping
+Super simple software for mind mapping.
