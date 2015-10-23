@@ -1,6 +1,12 @@
-class Model(object):
+class Model(dict):
+
+    def __init__(self):
+        super(Model, self).__init__()
 
     def __str__(self):
+        pass
+
+    def deserialize(self, xml):
         pass
 
     @staticmethod
@@ -13,16 +19,7 @@ class Model(object):
         # TODO: Implement this method
         return text
 
-
-class Project(Model):
-
-    def __init__(self):
-        self.leafs = []
-
-    def append(self, leaf):
-        self.leafs.append(leaf)
-
-    def __str__(self):
-        return "<project>\n" +\
-            "".join([str(leaf) for leaf in self.leafs]) +\
-            "</project>\n"
+    @staticmethod
+    def deserialize_attr(xml, attrs):
+        for key in attrs.keys():
+            attrs[key] = xml.get(key)
