@@ -18,15 +18,10 @@ class Edge(Model):
         return self.attributes[attr]
 
     def __str__(self):
-        return "Type: " + str(self.type) + '|' +\
-               "Thinkness: " + str(self.thickness) + '|' +\
-               "Color: " + self.color + '|' +\
-               "Node1: " + str(self.node1) + '|' +\
-               "Node2: " + str(self.node2) + '|' +\
-               "Position: " + str((self.x, self.y))
+        return "<edge " + self.serialize_dict(self.attributes) + " />\n"
 
     __repr__ = __str__
 
-    def getPosition(self):
+    def get_position(self):
         ''' Return position of edge control point as a touple '''
         return (self.x, self.y)

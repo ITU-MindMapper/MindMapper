@@ -1,6 +1,4 @@
 from mind_mapper.models import Model
-from mind_mapper.models.text import Text
-from mind_mapper.models.annotation import Annotation
 
 
 class Node(Model):
@@ -14,23 +12,16 @@ class Node(Model):
             "shape": kwargs["shape"],
             "size": kwargs["size"],
             "padding": kwargs["padding"],
-            "text": Text(),
-            "annotation": Annotation(),
         }
 
     def __getattr__(self, attr):
         return self.attributes[attr]
 
     def __str__(self):
-        return "ID: " + str(self.id) + '|' +\
-               "Positon: " + str((self.x, self.y)) + '|' +\
-               "BG:" + self.background + '|' +\
-               "Shape: " + self.shape + '|' +\
-               "Size: " + str(self.size) + '|' +\
-               "Padding: " + str(self.padding)
+        return "<node " + self.serialize_dict(self.attributes) + " />\n"
 
     __repr__ = __str__
 
-    def getPosition(self):
+    def get_position(self):
         ''' Return position of node as a touple '''
         return (self.x, self.y)

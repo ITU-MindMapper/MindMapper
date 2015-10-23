@@ -1,7 +1,4 @@
-from mind_mapper.cli import Argparse
-
-
-class Project(object):
+class Base(object):
 
     def __init__(self):
         pass

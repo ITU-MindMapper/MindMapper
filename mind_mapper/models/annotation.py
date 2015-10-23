@@ -7,9 +7,8 @@ class Annotation(Model):
         self.text = text
 
     def __str__(self):
-        return self.text
+        return "<annotation>\n" +\
+            self.serialize_text(self.text) +\
+            "\n</annotation>\n"
 
     __repr__ = __str__
-
-    def setText(self, text):
-        self.text = text
