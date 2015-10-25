@@ -18,7 +18,7 @@ class Text(Model):
                 "color": None,
                 "font": None,
             }
-            self.text = None
+            self.text = ""
 
     def __getattr__(self, attr):
         return self.attributes[attr]
@@ -27,13 +27,16 @@ class Text(Model):
         super(Text, self).__setattr__(attr, value)
 
     def __str__(self):
-        return "<text " + self.serialize_dict(self.attributes) +\
-            " >\n" +\
+        return "<text " + self.serialize_dict(self.attributes) + ">\n" +\
             self.serialize_text(self.text) +\
             "\n</text>\n"
 
     def deserialize(self, xml):
+        if self.attributes.keys() != xml.attrib.keys():
+            raise AttributeError(
+                "size, color, font are required only but have:\n" +
+                str(self.attributes.keys()))
         self.deserialize_attr(xml, self.attributes)
-        self.text = xml.get("text")
+        self.text = xml.text
 
     __repr__ = __str__

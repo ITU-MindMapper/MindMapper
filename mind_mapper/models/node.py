@@ -1,6 +1,7 @@
 from mind_mapper.models import Model
 from mind_mapper.models.annotation import Annotation
 from mind_mapper.models.text import Text
+import re
 
 
 class Node(Model):
@@ -40,12 +41,21 @@ class Node(Model):
 
     def __str__(self):
         return "<node " + self.serialize_dict(self.attributes) +\
-            ">\n" + str(self.text or '') + str(self.annotation or '') +\
+            ">\n" + str(self.text) + str(self.annotation) +\
             "</node>"
 
     __repr__ = __str__
 
     def deserialize(self, xml):
+        if xml.text and re.search(r"\w", str(xml.text)):
+            raise ValueError(
+                "Node shouldn't have text value! But has:\n'" + xml.text + "'")
+        if self.attributes.keys() != xml.attrib.keys():
+            raise AttributeError(
+                "Node has not enough/too many attributes!" +
+                "\nDiff: " + str(
+                    self.attribute_diff(
+                        self.attributes.keys(), xml.attrib.keys())))
         self.deserialize_attr(xml, self.attributes)
         for ch in xml.iter():
             if ch.tag == "text":

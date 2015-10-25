@@ -1,4 +1,5 @@
 from mind_mapper.models import Model
+import re
 
 
 class Edge(Model):
@@ -37,6 +38,15 @@ class Edge(Model):
             " />\n"
 
     def deserialize(self, xml):
+        if xml.text and re.search(r"\w", str(xml.text)):
+            raise ValueError(
+                "Edge shouldn't have text value! But has:\n'" + xml.text + "'")
+        if self.attributes.keys() != xml.attrib.keys():
+            raise AttributeError(
+                "Edge has not enough/too many attributes!" +
+                "\nDiff: " + str(
+                    self.attribute_diff(
+                        self.attributes.keys(), xml.attrib.keys())))
         self.deserialize_attr(xml, self.attributes)
 
     __repr__ = __str__

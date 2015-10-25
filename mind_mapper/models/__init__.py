@@ -22,4 +22,8 @@ class Model(dict):
     @staticmethod
     def deserialize_attr(xml, attrs):
         for key in attrs.keys():
-            attrs[key] = xml.get(key)
+            attrs[key] = xml.attrib[key]
+
+    @staticmethod
+    def attribute_diff(a, b):
+        return (a - b).union(b - a)

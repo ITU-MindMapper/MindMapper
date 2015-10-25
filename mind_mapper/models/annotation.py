@@ -7,7 +7,7 @@ class Annotation(Model):
         if kwargs:
             self.text = kwargs["text"]
         else:
-            self.text = None
+            self.text = ""
 
     def __str__(self):
         return "<annotation>\n" +\
@@ -15,8 +15,8 @@ class Annotation(Model):
             "\n</annotation>\n"
 
     def deserialize(self, xml):
-        self.text = xml.get("text")
-        if xml.attrs():
+        if xml.attrib.keys():
             raise AttributeError("Bad XML format!")
+        self.text = xml.text
 
     __repr__ = __str__
