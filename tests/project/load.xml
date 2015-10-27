@@ -1,0 +1,22 @@
+<project>
+    <node id='0' x='50' y='50' background='#FFAAFF' shape='modern' size='200' padding='50'>
+        <text size='12' color='#000000' font='DejaVu'>
+            Loooong text
+        </text>
+        <annotation>
+            Yeah, long teeeeeeeeext
+        </annotation>
+    </node>
+    <node id='1' x='50' y='50' background='#FFAAFF' shape='modern' size='200' padding='50'>
+        <text size='12' color='#000000' font='DejaVu'>
+            Loooong text
+        </text>
+        <annotation>
+            Yeah, long teeeeeeeeext
+        </annotation>
+    </node>
+    <edge type='arrow' thickness='5' color='#AAAAAA' node1='0' node2='1' x='100' y='200' />
+    <edge type='arrow' thickness='5' color='#AAAAAA' node1='1' node2='0' x='100' y='200' />
+    <edge type='arrow' thickness='5' color='#AAAAAA' node1='0' node2='0' x='100' y='200' />
+    <edge type='arrow' thickness='5' color='#AAAAAA' node1='1' node2='1' x='100' y='200' />
+</project>

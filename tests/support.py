@@ -2,4 +2,5 @@ from unittest import TestCase
 
 
 class MMTestCase(TestCase):
-    pass
+
+    project_dir = "tests/project"

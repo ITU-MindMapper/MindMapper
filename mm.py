@@ -1,10 +1,10 @@
 #!/bin/python3
 import sys
-from mind_mapper import Project
+from mind_mapper import Base
 
 
 def main():
-    proj = Project()
+    proj = Base()
     sys.exit(proj.run())
 
 
