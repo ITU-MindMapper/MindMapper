@@ -2,7 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 1.4
 
 Rectangle {
-    id: container
+    id: mainWindow
 
     anchors.fill: parent
 
@@ -16,8 +16,8 @@ Rectangle {
         horizontalAlignment: Text.AlignHCenter
     }
 
-    MouseArea{
-        onClicked: container.click(mouse.x, mouse.y)
+    MouseArea {
+        onDoubleClicked: mainWindow.click(mouse.x, mouse.y)
         anchors.fill: parent
     }
 }
