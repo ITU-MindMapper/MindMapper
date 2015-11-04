@@ -10,7 +10,7 @@ class View(object):
 
     counter = 0
 
-    shapes = ["rectangle"]
+    shapes = ["rectangle", "ellipse"]
 
     def __init__(self):
         self._controller = Controller(self)
@@ -28,18 +28,20 @@ class View(object):
 
     def create_node(self, node):
         qml_node = QQuickView(self._main)
+        qml_node.width = 500
+        qml_node.height = 500
         qml_node.setSource(QUrl(self._qml_dir + '/shapes/' +
                                 self.shapes[node.shape] + '.qml'))
-        qml_node.rootObject().setProperty("value", str(node.id))
-        qml_node.rootObject().setProperty("color", str(node.background))
-        qml_node.rootObject().setProperty("width", str(node.size))
-        qml_node.rootObject().setProperty("height", str(node.size))
-        qml_node.rootObject().setProperty("padding", str(node.padding))
+        qml_node.rootObject().setProperty("objectId", str(node.id))
+        qml_node.rootObject().setProperty("backgroundColor",
+                                          str(node.background))
+        qml_node.rootObject().setProperty("width", str(node.width))
+        qml_node.rootObject().setProperty("height", str(node.height))
         qml_node.rootObject().click.connect(self.clicked)
         qml_node.rootObject().position_changed.connect(
             self._controller.position_changed)
-        qml_node.setX(node.x - node.size / 2)
-        qml_node.setY(node.y - node.size / 2)
+        qml_node.setX(node.x - node.width / 2)
+        qml_node.setY(node.y - node.height / 2)
         qml_node.show()
         self.counter += 1
 

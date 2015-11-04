@@ -15,8 +15,8 @@ class Node(Model):
                 "y": kwargs["y"],
                 "background": kwargs["background"],
                 "shape": kwargs["shape"],
-                "size": kwargs["size"],
-                "padding": kwargs["padding"]
+                "height": kwargs["height"],
+                "width": kwargs["width"],
             }
             self.text = kwargs["text"]
             self.annotation = kwargs["annotation"]
@@ -27,8 +27,8 @@ class Node(Model):
                 "y": None,
                 "background": None,
                 "shape": None,
-                "size": None,
-                "padding": None,
+                "height": None,
+                "width": None,
             }
             self.text = Text()
             self.annotation = Annotation()

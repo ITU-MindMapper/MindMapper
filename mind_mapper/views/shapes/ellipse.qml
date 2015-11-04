@@ -3,13 +3,13 @@ import QtQuick 2.5
 Item {
     
     // Id of the shape
-    id: rectangleShape
+    id: elipseShape
 
     // Object ID
     property var objectId
 
     // Background color
-    property alias backgroundColor: content.color
+    property alias backgroundColor: canvas.backgroundColor
     
     // Text
     property alias text:      text.text
@@ -23,8 +23,24 @@ Item {
     // Content
     Rectangle {
         id: content
-        anchors.fill: parent
         border.color: "transparent"
+        color: "transparent"
+        anchors.fill: parent
+        
+        Canvas {
+            id: canvas
+            property color backgroundColor
+            anchors.fill: parent
+
+            onPaint: {
+                var ctx = getContext("2d");
+                ctx.reset();
+                ctx.beginPath();
+                ctx.fillStyle = backgroundColor;
+                ctx.ellipse(parent.x, parent.y, parent.width, parent.height);
+                ctx.fill();
+            }
+        }
     }
 
     // Text content
@@ -69,38 +85,9 @@ Item {
 
         Component.onCompleted: enableEditing()
 
-        onDoubleClicked: rectangleShape.destroy()
-
-        drag.target: rectangleShape
+        onDoubleClicked: elipseShape.destroy()
+        
+        drag.target: elipseShape
         drag.axis: Drag.XandYAxis
     }
 }
-
-
-/*
-Rectangle {
-
-    signal click(var val)
-    signal position_changed(var val, var x, var y)
-
-    property var value: "Tlacitko"
-    property var toolTipRoot
-    id: button
-
-
-    Text {
-        text: button.value
-        anchors.centerIn: parent
-        color: "black"
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            button.click(button.value);
-            parent.focus = true;
-        }
-        onReleased: button.position_changed(button.value, mouse.x, mouse.y)
-    }
-}
-*/

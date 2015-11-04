@@ -24,8 +24,8 @@ class TestDeserialization(MMTestCase):
         self.assertIn("y='0'", str(node))
         self.assertIn("background='#000000'", str(node))
         self.assertIn("shape='classic'", str(node))
-        self.assertIn("size='50'", str(node))
-        self.assertIn("padding='0'", str(node))
+        self.assertIn("height='50'", str(node))
+        self.assertIn("width='100'", str(node))
         self.assertIn("id='0'", str(node))
         self.assertIn("</node>", str(node))
 
@@ -44,7 +44,7 @@ class TestDeserialization(MMTestCase):
 
     def test_node(self):
         _xml = fromstring("<node x='0' y='0' id='0' shape='classic' " +
-                          "background='#000000' padding='0' size='50'>" +
+                          "background='#000000' height='50' width='100'>" +
                           "</node>")
         node = Node()
         node.deserialize(_xml)
@@ -79,7 +79,7 @@ class TestDeserialization(MMTestCase):
             "<project><edge type='auto' x='0' y='0' thickness='50' " +
             "color='#ffffff' node1='540' node2='0' />" +
             "<node x='0' y='0' id='0' shape='classic' " +
-            "background='#000000' padding='0' size='50'>" +
+            "background='#000000' height='50' width='100'>" +
             "<text size='0' color='#000000' font='lol'>ExampleText</text>" +
             "<annotation>ExampleAnnotation</annotation>" +
             "</node></project>")
@@ -93,16 +93,16 @@ class TestDeserialization(MMTestCase):
     def test_node_fail(self):
         node = Node()
         _xml = fromstring("<node x='0' y='0' id='0' shape='classic' " +
-                          "background='#000000' padding='0' size='50' " +
+                          "background='#000000' height='50' width='100' " +
                           "non_existing_attribute='value'>" +
                           "</node>")
         self.assertRaises(AttributeError, node.deserialize, _xml)
         _xml = fromstring("<node x='0' y='0' id='0' shape='classic' " +
-                          "background='#000000' padding='0' size='50'>" +
+                          "background='#000000' height='50' width='100'>" +
                           "FalseValue</node>")
         self.assertRaises(ValueError, node.deserialize, _xml)
         _xml = fromstring("<node x='0' y='0' id='0' shape='classic' " +
-                          "background='#000000' padding='0'>" +
+                          "background='#000000' width='100'>" +
                           "</node>")
         self.assertRaises(AttributeError, node.deserialize, _xml)
 

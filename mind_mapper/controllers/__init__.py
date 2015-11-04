@@ -9,16 +9,16 @@ class Controller(object):
 
     def __init__(self, view_manager):
         self.view_manager = view_manager
-        self.node_shape = 0
-        self.node_size = 100
-        self.node_padding = 0
+        self.node_shape = 1
+        self.node_width = 100
+        self.node_height = 50
         self.node_background = "#cc0000"
         self.nodes = []
 
     def create_node(self, x, y):
-        node = Node(x=int(x), y=int(y), background=self.node_background,
-                    shape=self.node_shape, size=int(self.node_size),
-                    padding=self.node_padding, id=self.NODE_IDS, text=Text(),
+        node = Node(x=x, y=y, background=self.node_background,
+                    shape=self.node_shape, width=self.node_width,
+                    height=self.node_height, id=self.NODE_IDS, text=Text(),
                     annotation=Annotation())
         self.nodes.append(node)
         self.NODE_IDS += 1
