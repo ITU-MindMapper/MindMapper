@@ -9,10 +9,10 @@ class Controller(object):
 
     def __init__(self, view_manager):
         self.view_manager = view_manager
-        self.node_shape = 1
+        self.node_shape = 0
         self.node_width = 100
         self.node_height = 50
-        self.node_background = "#cc0000"
+        self.node_background = "#afd8a3"
         self.nodes = []
 
     def create_node(self, x, y):
@@ -23,6 +23,7 @@ class Controller(object):
         self.nodes.append(node)
         self.NODE_IDS += 1
         self.view_manager.create_node(node)
+        self.node_shape = (self.node_shape + 1) % 2
 
     def node_text_changed(self, id, text):
         self.nodes[id].text = Text(text=text, size=self.text_size,

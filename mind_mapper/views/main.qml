@@ -1,10 +1,9 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.4
+import QtQuick.Window 2.2
 
-Rectangle {
+Item {
     id: mainWindow
-
-    anchors.fill: parent
 
     signal click(var x, var y)
 

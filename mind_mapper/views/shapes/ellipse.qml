@@ -20,6 +20,7 @@ Item {
     signal click(var val)
     signal position_changed(var val, var x, var y)
 
+
     // Content
     Rectangle {
         id: content
@@ -62,7 +63,7 @@ Item {
         focus: true
         visible: false
         
-        onEditingFinished: {
+        onAccepted: {
             text.text = inputField.text
             inputField.visible = false
             inputField.focus = false
@@ -83,10 +84,8 @@ Item {
 
         onClicked: enableEditing()
 
-        Component.onCompleted: enableEditing()
-
         onDoubleClicked: elipseShape.destroy()
-        
+
         drag.target: elipseShape
         drag.axis: Drag.XandYAxis
     }

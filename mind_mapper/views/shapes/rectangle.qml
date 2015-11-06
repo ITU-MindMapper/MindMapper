@@ -46,7 +46,7 @@ Item {
         focus: true
         visible: false
         
-        onEditingFinished: {
+        onAccepted: {
             text.text = inputField.text
             inputField.visible = false
             inputField.focus = false
@@ -66,8 +66,6 @@ Item {
         anchors.fill: parent
 
         onClicked: enableEditing()
-
-        Component.onCompleted: enableEditing()
 
         onDoubleClicked: rectangleShape.destroy()
 
