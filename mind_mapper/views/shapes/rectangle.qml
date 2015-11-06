@@ -17,8 +17,9 @@ Item {
     property alias textSize:  text.font.pointSize
     property alias textColor: text.color
 
-    signal click(var val)
-    signal position_changed(var val, var x, var y)
+    signal node_delete(var id)
+    signal node_position_changed(var id, var x, var y)
+    signal node_text_changed(var id, var new_text)
 
     // Content
     Rectangle {
@@ -50,6 +51,7 @@ Item {
             text.text = inputField.text
             inputField.visible = false
             inputField.focus = false
+            rectangleShape.node_text_changed(rectangleShape.objectId, text.text)
         }
     }
 
@@ -63,42 +65,29 @@ Item {
     // MouseArea
     MouseArea {
         id: mouseArea
-        anchors.fill: parent
+        
+        property var dragged: false
 
+        anchors.fill: parent
+        
         onClicked: enableEditing()
 
-        onDoubleClicked: rectangleShape.destroy()
+        onDoubleClicked: rectangleShape.node_delete(rectangleShape.objectId)
 
         drag.target: rectangleShape
         drag.axis: Drag.XandYAxis
-    }
-}
 
+        onPressed: dragged = false
+        onPositionChanged: dragged = true
 
-/*
-Rectangle {
-
-    signal click(var val)
-    signal position_changed(var val, var x, var y)
-
-    property var value: "Tlacitko"
-    property var toolTipRoot
-    id: button
-
-
-    Text {
-        text: button.value
-        anchors.centerIn: parent
-        color: "black"
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            button.click(button.value);
-            parent.focus = true;
+        onReleased: {
+            if(dragged){
+                rectangleShape.node_position_changed(
+                    rectangleShape.objectId,
+                    rectangleShape.x + rectangleShape.width / 2,
+                    rectangleShape.y + rectangleShape.height / 2)
+                dragged = false
+            }
         }
-        onReleased: button.position_changed(button.value, mouse.x, mouse.y)
     }
 }
-*/
