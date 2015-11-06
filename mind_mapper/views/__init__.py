@@ -45,14 +45,18 @@ class View(object):
         qml_node.rootObject().setProperty("text", str(node.id))
 
         # Signal connection
-        qml_node.rootObject().click.connect(self.clicked)
-        qml_node.rootObject().position_changed.connect(
-            self._controller.position_changed)
+        qml_node.rootObject().node_delete.connect(
+            self._controller.node_delete)
+        qml_node.rootObject().node_text_changed.connect(
+            self._controller.node_text_changed)
+        qml_node.rootObject().node_position_changed.connect(
+            self._controller.node_position_changed)
 
         # Position to mouse click
         qml_node.rootObject().setX(node.x - node.width / 2)
         qml_node.rootObject().setY(node.y - node.height / 2)
         self.counter += 1
+        return qml_node
 
     def node_update(self, node):
         pass

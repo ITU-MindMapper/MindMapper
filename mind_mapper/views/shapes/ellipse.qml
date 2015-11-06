@@ -3,7 +3,7 @@ import QtQuick 2.5
 Item {
     
     // Id of the shape
-    id: elipseShape
+    id: ellipseShape
 
     // Object ID
     property var objectId
@@ -17,9 +17,10 @@ Item {
     property alias textSize:  text.font.pointSize
     property alias textColor: text.color
 
-    signal click(var val)
-    signal position_changed(var val, var x, var y)
-
+    // Signals
+    signal node_delete(var id)
+    signal node_position_changed(var id, var x, var y)
+    signal node_text_changed(var id, var new_text)
 
     // Content
     Rectangle {
@@ -67,6 +68,7 @@ Item {
             text.text = inputField.text
             inputField.visible = false
             inputField.focus = false
+            ellipseShape.node_text_changed(ellipseShape.objectId, text.text)
         }
     }
 
@@ -80,13 +82,29 @@ Item {
     // MouseArea
     MouseArea {
         id: mouseArea
+        
+        property var dragged: false
+        
         anchors.fill: parent
 
         onClicked: enableEditing()
 
-        onDoubleClicked: elipseShape.destroy()
+        onDoubleClicked: ellipseShape.node_delete(ellipseShape.objectId)
 
-        drag.target: elipseShape
+        drag.target: ellipseShape
         drag.axis: Drag.XandYAxis
+
+        onPressed: dragged = false
+        onPositionChanged: dragged = true
+
+        onReleased: {
+            if(dragged){
+                ellipseShape.node_position_changed(
+                    ellipseShape.objectId,
+                    ellipseShape.x + ellipseShape.width / 2,
+                    ellipseShape.y + ellipseShape.height / 2)
+                dragged = false
+            }
+        }
     }
 }
