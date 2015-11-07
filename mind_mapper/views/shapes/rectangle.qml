@@ -70,14 +70,25 @@ Item {
 
         anchors.fill: parent
         
+        drag.target: rectangleShape
+        drag.axis: Drag.XandYAxis
+        drag.minimumX: rectangleShape.parent.x
+        drag.maximumX: 
+            rectangleShape.parent.x +
+            rectangleShape.parent.width -
+            rectangleShape.width 
+        drag.minimumY: rectangleShape.parent.y
+        drag.maximumY: 
+            rectangleShape.parent.y +
+            rectangleShape.parent.height -
+            rectangleShape.height
+
         onClicked: enableEditing()
 
         onDoubleClicked: rectangleShape.node_delete(rectangleShape.objectId)
 
-        drag.target: rectangleShape
-        drag.axis: Drag.XandYAxis
-
         onPressed: dragged = false
+
         onPositionChanged: dragged = true
 
         onReleased: {

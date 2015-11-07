@@ -87,14 +87,25 @@ Item {
         
         anchors.fill: parent
 
+        drag.target: ellipseShape
+        drag.axis: Drag.XandYAxis
+        drag.minimumX: ellipseShape.parent.x
+        drag.maximumX: 
+            ellipseShape.parent.x +
+            ellipseShape.parent.width -
+            ellipseShape.width 
+        drag.minimumY: ellipseShape.parent.y
+        drag.maximumY: 
+            ellipseShape.parent.y +
+            ellipseShape.parent.height -
+            ellipseShape.height
+
         onClicked: enableEditing()
 
         onDoubleClicked: ellipseShape.node_delete(ellipseShape.objectId)
 
-        drag.target: ellipseShape
-        drag.axis: Drag.XandYAxis
-
         onPressed: dragged = false
+
         onPositionChanged: dragged = true
 
         onReleased: {

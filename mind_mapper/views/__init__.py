@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QGuiApplication
-from PyQt5.QtQuick import QQuickView
+from PyQt5.QtQuick import QQuickView, QQuickItem
 from mind_mapper.controllers import Controller
 import sys
 import os
@@ -21,9 +21,10 @@ class View(object):
         self._main.setResizeMode(QQuickView.SizeRootObjectToView)
         self._main.setSource(QUrl(self._qml_dir + '/main.qml'))
 
-        self._main.rootObject().click.connect(self._controller.create_node)
-        self._main.setProperty("width", 500)
-        self._main.setProperty("height", 500)
+        self._main.rootObject().create_node.connect(
+            self._controller.create_node)
+        self._main.setProperty("width", 1000)
+        self._main.setProperty("height", 800)
         self._main.show()
 
     def run(self):
@@ -36,7 +37,9 @@ class View(object):
                               self._main)
 
         # Sets all properties
-        qml_node.rootObject().setProperty("parent", self._main.rootObject())
+        qml_node.rootObject().setProperty(
+            "parent",
+            self._main.rootObject().findChild(QQuickItem, "workspace"))
         qml_node.rootObject().setProperty("objectId", str(node.id))
         qml_node.rootObject().setProperty("backgroundColor",
                                           str(node.background))
