@@ -65,19 +65,27 @@ Item {
     // MouseArea
     MouseArea {
         id: mouseArea
-        
+        objectName: "mouseArea"
+
         property var dragged: false
+        property var dragMaxX: 0
+        property var dragMaxY: 0
 
         anchors.fill: parent
         
+        drag.target: rectangleShape
+        drag.axis: Drag.XandYAxis
+        drag.minimumX: 0
+        drag.minimumY: 0
+        drag.maximumX: dragMaxX
+        drag.maximumY: dragMaxY
+
         onClicked: enableEditing()
 
         onDoubleClicked: rectangleShape.node_delete(rectangleShape.objectId)
 
-        drag.target: rectangleShape
-        drag.axis: Drag.XandYAxis
-
         onPressed: dragged = false
+
         onPositionChanged: dragged = true
 
         onReleased: {
