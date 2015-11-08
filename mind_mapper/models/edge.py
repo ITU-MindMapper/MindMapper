@@ -8,6 +8,7 @@ class Edge(Model):
         super(Edge, self).__init__()
         if kwargs:
             self.attributes = {
+                "id": kwargs["id"],
                 "type": kwargs["type"],
                 "thickness": kwargs["thickness"],
                 "color": kwargs["color"],
@@ -18,6 +19,7 @@ class Edge(Model):
             }
         else:
             self.attributes = {
+                "id": None,
                 "type": None,
                 "thickness": None,
                 "color": None,
