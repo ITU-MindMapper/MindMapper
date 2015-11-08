@@ -21,6 +21,10 @@ class View(object):
 
         self._main.rootObject().create_node.connect(
             self._controller.create_node)
+        self._main.rootObject().save.connect(
+            self._controller.save)
+        self._main.rootObject().load.connect(
+            self._controller.load)
         self._main.setProperty("width", 1000)
         self._main.setProperty("height", 800)
         self._main.show()
@@ -35,7 +39,7 @@ class View(object):
                               self._main)
 
         workspace = self._main.rootObject().findChild(QQuickItem, "workspace")
-        mouseArea = qml_node.rootObject().findChild(QQuickItem, "mouseArea")
+        mouse_area = qml_node.rootObject().findChild(QQuickItem, "mouseArea")
 
         # Sets all properties
         qml_node.rootObject().setProperty("parent", workspace)
@@ -47,10 +51,10 @@ class View(object):
         qml_node.rootObject().setProperty("text", str(node.id))
 
         # Sets drag boundaries
-        mouseArea.setProperty("dragMaxX",
-                              workspace.property("width") - node.width)
-        mouseArea.setProperty("dragMaxY",
-                              workspace.property("height") - node.height)
+        mouse_area.setProperty("dragMaxX",
+                               workspace.property("width") - node.width)
+        mouse_area.setProperty("dragMaxY",
+                               workspace.property("height") - node.height)
 
         # Signal connection
         qml_node.rootObject().node_delete.connect(
@@ -69,11 +73,11 @@ class View(object):
 
         return qml_node
 
-    def create_edge(self, edge):
+    def create_edge(self, edge, node1, node2):
         qml_edge = QQuickView(QUrl(self._qml_dir + '/edges/bezier.qml'),
                               self._main)
         workspace = self._main.rootObject().findChild(QQuickItem, "workspace")
-        mouseArea = qml_edge.rootObject().findChild(QQuickItem, "mouseArea")
+        mouse_area = qml_edge.rootObject().findChild(QQuickItem, "mouseArea")
 
         qml_edge.rootObject().setProperty("parent", workspace)
         qml_edge.rootObject().setProperty("objectId", str(edge.id))
@@ -86,16 +90,16 @@ class View(object):
 
         qml_edge.rootObject().setProperty("ctrlX", str(edge.x))
         qml_edge.rootObject().setProperty("ctrlY", str(edge.y))
-        qml_edge.rootObject().setProperty("startX", str(edge.node1.x))
-        qml_edge.rootObject().setProperty("startY", str(edge.node1.y))
-        qml_edge.rootObject().setProperty("endX", str(edge.node2.x))
-        qml_edge.rootObject().setProperty("endY", str(edge.node2.y))
+        qml_edge.rootObject().setProperty("startX", str(node1.x))
+        qml_edge.rootObject().setProperty("startY", str(node1.y))
+        qml_edge.rootObject().setProperty("endX", str(node2.x))
+        qml_edge.rootObject().setProperty("endY", str(node2.y))
 
         # Sets drag boundaries
-        mouseArea.setProperty("dragMaxX",
-                              workspace.property("width") - 10)
-        mouseArea.setProperty("dragMaxY",
-                              workspace.property("height") - 10)
+        mouse_area.setProperty("dragMaxX",
+                               workspace.property("width") - 10)
+        mouse_area.setProperty("dragMaxY",
+                               workspace.property("height") - 10)
 
         # Signal connection
         qml_edge.rootObject().edge_delete.connect(

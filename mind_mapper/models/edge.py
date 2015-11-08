@@ -5,51 +5,39 @@ import re
 class Edge(Model):
 
     def __init__(self, **kwargs):
-        super(Edge, self).__init__()
-        if kwargs:
-            self.attributes = {
-                "id": kwargs["id"],
-                "type": kwargs["type"],
-                "thickness": kwargs["thickness"],
-                "color": kwargs["color"],
-                "node1": kwargs["node1"],
-                "node2": kwargs["node2"],
-                "x": kwargs["x"],
-                "y": kwargs["y"],
-            }
-        else:
-            self.attributes = {
-                "id": None,
-                "type": None,
-                "thickness": None,
-                "color": None,
-                "node1": None,
-                "node2": None,
-                "x": None,
-                "y": None,
-            }
-
-    def __getattr__(self, attr):
-        return self.attributes[attr]
-
-    def __setattr__(self, attr, value):
-        return super(Edge, self).__setattr__(attr, value)
+        super(Edge, self).__init__({
+            "id": None,
+            "type": None,
+            "thickness": None,
+            "color": None,
+            "node1": None,
+            "node2": None,
+            "x": None,
+            "y": None,
+        }, kwargs)
 
     def __str__(self):
-        return "<edge " + self.serialize_dict(self.attributes) +\
+        return "<edge " + self.serialize_dict() +\
             " />\n"
 
     def deserialize(self, xml):
         if xml.text and re.search(r"\w", str(xml.text)):
             raise ValueError(
                 "Edge shouldn't have text value! But has:\n'" + xml.text + "'")
-        if self.attributes.keys() != xml.attrib.keys():
+        if self.keys() != xml.attrib.keys():
             raise AttributeError(
                 "Edge has not enough/too many attributes!" +
                 "\nDiff: " + str(
                     self.attribute_diff(
-                        self.attributes.keys(), xml.attrib.keys())))
-        self.deserialize_attr(xml, self.attributes)
+                        self.keys(), xml.attrib.keys())))
+        self.deserialize_attr(xml)
+        self.id = int(self.id)
+        self.type = int(self.type)
+        self.thickness = int(self.thickness)
+        self.node1 = int(self.node1)
+        self.node2 = int(self.node2)
+        self.x = int(self.x)
+        self.y = int(self.y)
 
     __repr__ = __str__
 

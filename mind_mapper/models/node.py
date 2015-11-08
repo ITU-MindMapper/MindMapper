@@ -7,42 +7,26 @@ import re
 class Node(Model):
 
     def __init__(self, **kwargs):
-        super(Node, self).__init__()
         if kwargs:
-            self.attributes = {
-                "id": kwargs["id"],
-                "x": kwargs["x"],
-                "y": kwargs["y"],
-                "background": kwargs["background"],
-                "shape": kwargs["shape"],
-                "height": kwargs["height"],
-                "width": kwargs["width"],
-            }
             self.text = kwargs["text"]
             self.annotation = kwargs["annotation"]
         else:
-            self.attributes = {
-                "id": None,
-                "x": None,
-                "y": None,
-                "background": None,
-                "shape": None,
-                "height": None,
-                "width": None,
-            }
             self.text = Text()
             self.annotation = Annotation()
-
-    def __getattr__(self, attr):
-        return self.attributes[attr]
-
-    def __setattr__(self, attr, value):
-        super(Node, self).__setattr__(attr, value)
+        super(Node, self).__init__({
+            "id": None,
+            "x": None,
+            "y": None,
+            "background": None,
+            "shape": None,
+            "height": None,
+            "width": None,
+        }, kwargs, ["text", "annotation"])
 
     def __str__(self):
-        return "<node " + self.serialize_dict(self.attributes) +\
+        return "<node " + self.serialize_dict() +\
             ">\n" + str(self.text) + str(self.annotation) +\
-            "</node>"
+            "</node>\n"
 
     __repr__ = __str__
 
@@ -50,18 +34,24 @@ class Node(Model):
         if xml.text and re.search(r"\w", str(xml.text)):
             raise ValueError(
                 "Node shouldn't have text value! But has:\n'" + xml.text + "'")
-        if self.attributes.keys() != xml.attrib.keys():
+        if self.keys() != xml.attrib.keys():
             raise AttributeError(
                 "Node has not enough/too many attributes!" +
                 "\nDiff: " + str(
                     self.attribute_diff(
-                        self.attributes.keys(), xml.attrib.keys())))
-        self.deserialize_attr(xml, self.attributes)
+                        self.keys(), xml.attrib.keys())))
+        self.deserialize_attr(xml)
         for ch in xml.iter():
             if ch.tag == "text":
                 self.text.deserialize(ch)
             elif ch.tag == "annotation":
                 self.annotation.deserialize(ch)
+        self.x = int(self.x)
+        self.y = int(self.y)
+        self.width = int(self.width)
+        self.height = int(self.height)
+        self.id = int(self.id)
+        self.shape = int(self.shape)
 
     def get_position(self):
         ''' Return position of node as a touple '''

@@ -6,6 +6,8 @@ Item {
 
     signal toolbar_sel(var id)
     signal create_node(var x, var y)
+    signal save()
+    signal load()
 
     Rectangle {
         anchors.fill: parent
@@ -36,17 +38,43 @@ Item {
             id: menu
             width: 100
 
-            // Here shall be thy toolbars. Praise the lord.
+            // Here shall be thy toolbars. Praise the sun.
             Rectangle {
                 width: parent.width
                 height: parent.width
                 color: "#ff4000"
+
+                Text {
+                    text: "SAVE"
+                    anchors.centerIn: parent
+                    anchors.fill: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: mainWindow.save()
+                }
             }
 
             Rectangle {
                 width: parent.width
                 height: parent.width
                 color: "#2bdce1"
+
+                Text {
+                    text: "LOAD"
+                    anchors.centerIn: parent
+                    anchors.fill: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: mainWindow.load()
+                }
             }
 
             Rectangle {
