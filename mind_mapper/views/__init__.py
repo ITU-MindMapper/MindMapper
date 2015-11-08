@@ -8,8 +8,6 @@ import os
 
 class View(object):
 
-    counter = 0
-
     shapes = ["rectangle", "ellipse"]
 
     def __init__(self):
@@ -61,12 +59,51 @@ class View(object):
             self._controller.node_text_changed)
         qml_node.rootObject().node_position_changed.connect(
             self._controller.node_position_changed)
+        qml_node.rootObject().node_connect.connect(
+            self._controller.node_connect)
 
         # Position to mouse click
         qml_node.rootObject().setX(node.x - node.width / 2)
         qml_node.rootObject().setY(node.y - node.height / 2)
-        self.counter += 1
+        qml_node.rootObject().setZ(2)
+
         return qml_node
+
+    def create_edge(self, edge):
+        qml_edge = QQuickView(QUrl(self._qml_dir + '/edges/bezier.qml'),
+                              self._main)
+        workspace = self._main.rootObject().findChild(QQuickItem, "workspace")
+        mouseArea = qml_edge.rootObject().findChild(QQuickItem, "mouseArea")
+
+        qml_edge.rootObject().setProperty("parent", workspace)
+        qml_edge.rootObject().setProperty("objectId", str(edge.id))
+        qml_edge.rootObject().setZ(1)
+
+        qml_edge.rootObject().setProperty(
+            "width", workspace.property("width"))
+        qml_edge.rootObject().setProperty(
+            "height", workspace.property("height"))
+
+        qml_edge.rootObject().setProperty("ctrlX", str(edge.x))
+        qml_edge.rootObject().setProperty("ctrlY", str(edge.y))
+        qml_edge.rootObject().setProperty("startX", str(edge.node1.x))
+        qml_edge.rootObject().setProperty("startY", str(edge.node1.y))
+        qml_edge.rootObject().setProperty("endX", str(edge.node2.x))
+        qml_edge.rootObject().setProperty("endY", str(edge.node2.y))
+
+        # Sets drag boundaries
+        mouseArea.setProperty("dragMaxX",
+                              workspace.property("width") - 10)
+        mouseArea.setProperty("dragMaxY",
+                              workspace.property("height") - 10)
+
+        # Signal connection
+        qml_edge.rootObject().edge_delete.connect(
+            self._controller.edge_delete)
+        qml_edge.rootObject().edge_position_changed.connect(
+            self._controller.edge_position_changed)
+
+        return qml_edge
 
     def node_update(self, node):
         pass

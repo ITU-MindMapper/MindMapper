@@ -20,6 +20,7 @@ Item {
     signal node_delete(var id)
     signal node_position_changed(var id, var x, var y)
     signal node_text_changed(var id, var new_text)
+    signal node_connect(var id)
 
     // Content
     Rectangle {
@@ -68,11 +69,14 @@ Item {
         objectName: "mouseArea"
 
         property var dragged: false
+        property var ispress: false
         property var dragMaxX: 0
         property var dragMaxY: 0
 
         anchors.fill: parent
         
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+
         drag.target: rectangleShape
         drag.axis: Drag.XandYAxis
         drag.minimumX: 0
@@ -80,22 +84,37 @@ Item {
         drag.maximumX: dragMaxX
         drag.maximumY: dragMaxY
 
-        onClicked: enableEditing()
+        onClicked: {
+            if(mouse.button == Qt.LeftButton)
+                enableEditing();
+            else if (mouse.button == Qt.RightButton)
+                rectangleShape.node_connect(rectangleShape.objectId);
+        }
 
-        onDoubleClicked: rectangleShape.node_delete(rectangleShape.objectId)
+        onDoubleClicked: {
+            if(mouse.button == Qt.LeftButton)
+                rectangleShape.node_delete(rectangleShape.objectId)
+        }
 
-        onPressed: dragged = false
+        onPressed: {
+            if(mouse.button == Qt.LeftButton){
+                dragged = false
+                ispress = true
+            }
+        }
 
-        onPositionChanged: dragged = true
-
-        onReleased: {
-            if(dragged){
+        onPositionChanged: {
+            dragged = true
+            if(ispress == true)
                 rectangleShape.node_position_changed(
                     rectangleShape.objectId,
                     rectangleShape.x + rectangleShape.width / 2,
-                    rectangleShape.y + rectangleShape.height / 2)
-                dragged = false
-            }
+                    rectangleShape.y + rectangleShape.height / 2);
+        }
+
+        onReleased: {
+            dragged = false;
+            ispress = false;
         }
     }
 }
