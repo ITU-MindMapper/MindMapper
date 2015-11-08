@@ -98,7 +98,7 @@ Item {
         onPositionChanged: dragged = true
 
         onReleased: {
-            if(dragged){
+            if(dragged) {
                 bezierEdge.edge_position_changed(
                     bezierEdge.objectId,
                     ctrlPoint.x,
@@ -107,5 +107,4 @@ Item {
             }
         }
     }
-
 }
