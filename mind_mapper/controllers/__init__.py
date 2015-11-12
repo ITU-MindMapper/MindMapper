@@ -45,8 +45,8 @@ class Controller(object):
             print("Loaded nodes: " + str(self.project.nodes))
             print("Loaded NodeViews: " + str(self.nodeViews))
             # node_ids should be biggest of loaded ids
-            if self.NODE_IDS < id:
-                self.NODE_IDS = id
+            if self.NODE_IDS <= id:
+                self.NODE_IDS = id + 1
         # create edges
         for id in self.project.edges:
             self.edgeViews[id] = self.view_manager.create_edge(
@@ -56,8 +56,8 @@ class Controller(object):
             print("Loaded edges: " + str(self.project.edges))
             print("Loaded EdgeViews: " + str(self.edgeViews))
             # egde_ids should be biggest of loaded ids
-            if self.EDGE_IDS < id:
-                self.EDGE_IDS = id
+            if self.EDGE_IDS <= id:
+                self.EDGE_IDS = id + 1
 
     def save(self, where="temp.xml"):
         with open(where, "w") as out:
@@ -99,6 +99,18 @@ class Controller(object):
         self.project.nodes[int(id)].x = int(x)
         self.project.nodes[int(id)].y = int(y)
         self.view_manager.node_update(self.project.nodes[int(id)])
+
+        # Connection indicator modification
+        if self.connectNode is not None:
+            if self.connectNode.id == int(id):
+                self.view_manager._main.rootObject().setProperty(
+                    "connectingFromX", x)
+                self.view_manager._main.rootObject().setProperty(
+                    "connectingFromY", y)
+                self.view_manager._main.rootObject().setProperty(
+                    "connectingToX", x)
+                self.view_manager._main.rootObject().setProperty(
+                    "connectingToY", y)
 
         # Edge modification
         start_ids = []
@@ -147,6 +159,27 @@ class Controller(object):
     def node_connect(self, id):
         if self.connectNode is None:
             self.connectNode = self.project.nodes[int(id)]
+            self.view_manager._main.rootObject().setProperty(
+                "connectingFromX", self.connectNode.x)
+            self.view_manager._main.rootObject().setProperty(
+                "connectingFromY", self.connectNode.y)
+            self.view_manager._main.rootObject().setProperty(
+                "connectingToX", self.connectNode.x)
+            self.view_manager._main.rootObject().setProperty(
+                "connectingToY", self.connectNode.y)
+            self.view_manager._main.rootObject().setProperty(
+                "connecting", True)
         elif self.connectNode.id != int(id):
+            self.view_manager._main.rootObject().setProperty(
+                "connecting", False)
             self.create_edge(self.connectNode, self.project.nodes[int(id)])
             self.connectNode = None
+
+    def mouse_position(self, x, y):
+        self.view_manager._main.rootObject().setProperty("connectingToX", x)
+        self.view_manager._main.rootObject().setProperty("connectingToY", y)
+
+    def lose_focus(self):
+        self.connectNode = None
+        self.view_manager._main.rootObject().setProperty(
+            "connecting", False)

@@ -21,10 +21,15 @@ class View(object):
 
         self._main.rootObject().create_node.connect(
             self._controller.create_node)
+        self._main.rootObject().mouse_position.connect(
+            self._controller.mouse_position)
         self._main.rootObject().save.connect(
             self._controller.save)
         self._main.rootObject().load.connect(
             self._controller.load)
+        self._main.rootObject().lose_focus.connect(
+            self._controller.lose_focus)
+
         self._main.setProperty("width", 1000)
         self._main.setProperty("height", 800)
         self._main.show()

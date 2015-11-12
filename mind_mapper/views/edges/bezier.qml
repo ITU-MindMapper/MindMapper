@@ -37,7 +37,7 @@ Item {
             property var endY: 0
             property var ctrlX: ctrlPoint.x + 5
             property var ctrlY: ctrlPoint.y + 5
-            property var thickness: 5;
+            property var thickness: 10;
 
             onStartXChanged:requestPaint();
             onStartYChanged:requestPaint();
