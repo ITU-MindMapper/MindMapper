@@ -37,6 +37,40 @@ Item {
             height: parent.height
             color: "white"
 
+            onWidthChanged: gridcanvas.requestPaint();
+            onHeightChanged: gridcanvas.requestPaint();
+
+            Canvas {
+                id: gridcanvas
+                anchors.fill: parent
+                property var size: 50
+                property var vertical_count: parent.width/size - 1
+                property var horizontal_count: parent.height/size - 1
+                property var posX: 0
+                property var posY: 0
+                onPaint: {
+                    posX = 0
+                    posY = 0
+                    var ctx = getContext("2d");
+                    ctx.reset();
+                    ctx.strokeStyle = Qt.rgba(0.8, 0.8, 0.8, 1);
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    var i;
+                    for (i = 0; i < vertical_count; i++) {
+                        posX = posX + size;
+                        ctx.moveTo(posX, 0);
+                        ctx.lineTo(posX, parent.height);
+                    }
+                    for (i = 0; i < horizontal_count; i++) { 
+                        posY = posY + size
+                        ctx.moveTo(0, posY);
+                        ctx.lineTo(parent.width, posY);
+                    }
+                    ctx.stroke();
+                }
+            }
+
             Canvas {
                 id: connectionPointer
                 anchors.fill: parent
