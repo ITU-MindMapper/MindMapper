@@ -14,6 +14,7 @@ Item {
     property alias endY: canvas.endY
     property alias ctrlX: ctrlPoint.x
     property alias ctrlY: ctrlPoint.y
+    property alias color: canvas.edgeColor
 
     // Signals
     signal edge_delete(var id)
@@ -72,6 +73,7 @@ Item {
             property var ctrlX: ctrlPoint.x + 5
             property var ctrlY: ctrlPoint.y + 5
             property var thickness: 20;
+            property var edgeColor: "black"
 
             onStartXChanged:requestPaint();
             onStartYChanged:requestPaint();
@@ -89,7 +91,8 @@ Item {
 
                 var ctx = getContext("2d");
                 ctx.reset()
-                ctx.strokeStyle = Qt.rgba(0, 0, 0, 1);
+                ctx.strokeStyle = edgeColor
+                ctx.fillStyle = edgeColor
                 ctx.lineWidth = 1;
                 ctx.beginPath();
                 ctx.moveTo(sp[0], sp[1]);

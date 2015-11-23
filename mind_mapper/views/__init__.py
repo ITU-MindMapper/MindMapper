@@ -29,6 +29,10 @@ class View(object):
             self._controller.load)
         self._main.rootObject().lose_focus.connect(
             self._controller.lose_focus)
+        self._main.rootObject().node_color_sel.connect(
+            self._controller.node_color_sel)
+        self._main.rootObject().edge_color_sel.connect(
+            self._controller.edge_color_sel)
 
         self._main.setProperty("width", 1000)
         self._main.setProperty("height", 800)
@@ -99,6 +103,7 @@ class View(object):
         qml_edge.rootObject().setProperty("startY", str(node1.y))
         qml_edge.rootObject().setProperty("endX", str(node2.x))
         qml_edge.rootObject().setProperty("endY", str(node2.y))
+        qml_edge.rootObject().setProperty("color", str(edge.color))
 
         # Sets drag boundaries
         mouse_area.setProperty("dragMaxX",

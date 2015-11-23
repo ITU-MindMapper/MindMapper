@@ -10,6 +10,9 @@ Item {
     signal lose_focus()
     signal save()
     signal load()
+    signal node_color_sel(var color)
+    signal edge_color_sel(var color)
+
 
     // Connection Pointer attributes
     property var connecting
@@ -19,6 +22,13 @@ Item {
     property alias connectingToY: connectionPointer.endY
 
     onConnectingChanged: connectionPointer.requestPaint()
+
+    function clearToolbars(){
+        nodeColorToolbar.visible = false;
+        nodeColorSelButton.hoverEnabled = true;
+        edgeColorToolbar.visible = false;
+        edgeColorSelButton.hoverEnabled = true;
+    }
 
     // Beckground
     Rectangle {
@@ -110,6 +120,30 @@ Item {
                 }
             } // end of connection pointer
 
+            ColorToolbar {
+                id: nodeColorToolbar
+                anchors.right: parent.right
+                visible: false
+                z: 4
+
+                onClicked: {
+                    mainWindow.node_color_sel(color);
+                    nodeColorSelButton.iconcolor = color;
+                }
+            }
+
+            ColorToolbar {
+                id: edgeColorToolbar
+                anchors.right: parent.right
+                visible: false
+                z: 4
+
+                onClicked: {
+                    mainWindow.edge_color_sel(color);
+                    edgeColorSelButton.iconcolor = color;
+                }
+            }
+
             // Workspace mouse area
             MouseArea {
                 anchors.fill: parent
@@ -147,17 +181,67 @@ Item {
             CustomButton {
                 height: 40
                 width: parent.width
-                color: "#E5E5E5"
+                nohovercolor: "#E5E5E5"
                 hovercolor: "#D0D0D0"
                 iconsource: "resources/load.png"
                 textvalue: "Load"
                 onClicked: mainWindow.load()
             }
 
+            CustomButton {
+                id: nodeColorSelButton
+                height: 40
+                width: parent.width
+                nohovercolor: "#E5E5E5"
+                hovercolor: "#D0D0D0"
+                textvalue: "Node"
+                iconcolor: "#9dd2e7"
+                onClicked: {
+                    hoverEnabled = !hoverEnabled;
+                    if(nodeColorToolbar.visible == true){
+                        nodeColorToolbar.visible = false;
+                        nodeColorSelButton.hoverEnabled = true;
+                    }
+                    else {
+                        mainWindow.clearToolbars();
+                        nodeColorToolbar.visible = true;
+                        nodeColorSelButton.hoverEnabled = false;
+                    }
+                }
+            }
+
+            CustomButton {
+                id: edgeColorSelButton
+                height: 40
+                width: parent.width
+                nohovercolor: "#E5E5E5"
+                hovercolor: "#D0D0D0"
+                textvalue: "Edge"
+                iconcolor: "#9dd2e7"
+                onClicked: {
+                    hoverEnabled = !hoverEnabled;
+                    if(edgeColorToolbar.visible == true){
+                        edgeColorToolbar.visible = false;
+                        edgeColorSelButton.hoverEnabled = true;
+                    }
+                    else {
+                        mainWindow.clearToolbars();
+                        edgeColorToolbar.visible = true;
+                        edgeColorSelButton.hoverEnabled = false;
+                    }
+                }
+            }
+
             Rectangle {
+                id: trol
                 width: parent.width
                 height: parent.width
                 color: "#f8ffcc"
+
+                MouseArea {
+                    anchors.fill:  parent
+                    onClicked: mainWindow.clearToolbars()
+                }
             }
         } // end of toolbar menu
     } // end of layout
