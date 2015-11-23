@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.5
 import QtQuick.Controls 1.4
 
 Item {
@@ -11,6 +11,7 @@ Item {
     signal save()
     signal load()
 
+    // Connection Pointer attributes
     property var connecting
     property alias connectingFromX: connectionPointer.cx
     property alias connectingFromY: connectionPointer.cy
@@ -19,16 +20,19 @@ Item {
 
     onConnectingChanged: connectionPointer.requestPaint()
 
+    // Beckground
     Rectangle {
         anchors.fill: parent
         color: "#E5E5E5"
     }
 
+    // Layout of elements
     Grid {
         rows: 1
         columns: 2
         anchors.fill: parent
 
+        // Workspace
         Rectangle {
             id: workspace
             objectName: "workspace"
@@ -40,6 +44,7 @@ Item {
             onWidthChanged: gridcanvas.requestPaint();
             onHeightChanged: gridcanvas.requestPaint();
 
+            // Background grid for better work
             Canvas {
                 id: gridcanvas
                 anchors.fill: parent
@@ -69,8 +74,9 @@ Item {
                     }
                     ctx.stroke();
                 }
-            }
+            } // end of background grid
 
+            // Connection pointer indicator
             Canvas {
                 id: connectionPointer
                 anchors.fill: parent
@@ -102,8 +108,9 @@ Item {
                         ctx.clearRect(0,0,parent.width,parent.height);
                     }
                 }
-            }
+            } // end of connection pointer
 
+            // Workspace mouse area
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
@@ -116,51 +123,35 @@ Item {
                     if(mainWindow.connecting == true)
                         mainWindow.mouse_position(mouse.x, mouse.y)
                 }
-            }
+            } // end of workspace mouse area
+        } // end of workspace
 
-        }
-
+        // Toolbar menu
         Column {
             id: menu
             width: 100
+            z: 4
 
-            // Here shall be thy toolbars. Praise the sun.
-            Rectangle {
+            // Save button
+            CustomButton {
+                height: 40
                 width: parent.width
-                height: parent.width
-                color: "#ff4000"
-
-                Text {
-                    text: "SAVE"
-                    anchors.centerIn: parent
-                    anchors.fill: parent
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: mainWindow.save()
-                }
+                color: "#E5E5E5"
+                hovercolor: "#D0D0D0"
+                iconsource: "resources/save.png"
+                textvalue: "Save"
+                onClicked: mainWindow.save()
             }
 
-            Rectangle {
+            // Load button
+            CustomButton {
+                height: 40
                 width: parent.width
-                height: parent.width
-                color: "#2bdce1"
-
-                Text {
-                    text: "LOAD"
-                    anchors.centerIn: parent
-                    anchors.fill: parent
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: mainWindow.load()
-                }
+                color: "#E5E5E5"
+                hovercolor: "#D0D0D0"
+                iconsource: "resources/load.png"
+                textvalue: "Load"
+                onClicked: mainWindow.load()
             }
 
             Rectangle {
@@ -168,6 +159,6 @@ Item {
                 height: parent.width
                 color: "#f8ffcc"
             }
-        }
-    }
-}
+        } // end of toolbar menu
+    } // end of layout
+} // end of main window
