@@ -12,10 +12,10 @@ Item {
     property alias backgroundColor: content.color
     
     // Text
-    property alias text:      text.text
-    property alias textFont:  text.font.family
-    property alias textSize:  text.font.pointSize
-    property alias textColor: text.color
+    property alias text:      text.nodetext
+    property alias textFont:  text.textfont
+    property alias textSize:  text.textsize
+    property alias textColor: text.textcolor
 
     signal node_delete(var id)
     signal node_position_changed(var id, var x, var y)
@@ -30,37 +30,11 @@ Item {
     }
 
     // Text content
-    Text {
+    Nodetext {
         id: text
-        anchors.centerIn: parent
-    }
-
-    // Text input field
-    TextInput {
-        id: inputField
-        anchors.centerIn: parent
-        anchors.fill: parent
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        color: text.color
-        font.family: text.font.family
-        font.pointSize: text.font.pointSize
-        focus: true
-        visible: false
-        
-        onAccepted: {
-            text.text = inputField.text
-            inputField.visible = false
-            inputField.focus = false
-            rectangleShape.node_text_changed(rectangleShape.objectId, text.text)
-        }
-    }
-
-    function enableEditing() {
-        inputField.focus = true
-        inputField.visible = true
-        inputField.text = text.text
-        text.text = ""
+        width: parent.width
+        height: parent.height
+        onTextChanged: rectangleShape.node_text_changed(rectangleShape.objectId, text.nodetext)
     }
 
     // MouseArea
@@ -86,7 +60,7 @@ Item {
 
         onClicked: {
             if(mouse.button == Qt.LeftButton)
-                enableEditing();
+                text.inputting = true;
             else if (mouse.button == Qt.RightButton)
                 rectangleShape.node_connect(rectangleShape.objectId);
         }

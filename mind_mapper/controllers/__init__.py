@@ -17,7 +17,8 @@ class Controller(object):
         self.node_shape = 0
         self.node_width = 100
         self.node_height = 50
-        self.node_background = "#afd8a3"
+        self.node_background = "#9dd2e7"
+        self.edge_color = "#9dd2e7"
         self.edge_thickness = 1
         self.edge_type = 0
         self.connectNode = None
@@ -79,7 +80,7 @@ class Controller(object):
                     y=int((node1.y + node2.y) / 2),
                     thickness=self.edge_thickness, type=self.edge_type,
                     node1=node1.id, node2=node2.id, id=self.EDGE_IDS,
-                    color=None)
+                    color=self.edge_color)
         self.project.edges[self.EDGE_IDS] = edge
         self.edgeViews[self.EDGE_IDS] = self.view_manager.create_edge(
             edge, node1, node2)
@@ -183,3 +184,9 @@ class Controller(object):
         self.connectNode = None
         self.view_manager._main.rootObject().setProperty(
             "connecting", False)
+
+    def node_color_sel(self, color):
+        self.node_background = color.name()
+
+    def edge_color_sel(self, color):
+        self.edge_color = color.name()
