@@ -85,6 +85,7 @@ class Controller(object):
         self.edgeViews[self.EDGE_IDS] = self.view_manager.create_edge(
             edge, node1, node2)
         self.EDGE_IDS += 1
+        self.edge_type = self.EDGE_IDS % 2
 
     def node_text_changed(self, id, text):
         logging.debug('Text of node ' + str(id) + ' changed to: ' + text)
@@ -190,3 +191,11 @@ class Controller(object):
 
     def edge_color_sel(self, color):
         self.edge_color = color.name()
+
+    def window_resize(self, width, height):
+        for key, view in self.edgeViews.items():
+            view.rootObject().setProperty("workspaceWidth", str(width))
+            view.rootObject().setProperty("workspaceHeight", str(height))
+        for key, view in self.nodeViews.items():
+            view.rootObject().setProperty("workspaceWidth", str(width))
+            view.rootObject().setProperty("workspaceHeight", str(height))

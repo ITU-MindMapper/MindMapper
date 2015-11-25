@@ -8,6 +8,8 @@ Item {
     // Object ID
     property var objectId
 
+    property alias workspaceWidth: bezierEdge.width
+    property alias workspaceHeight: bezierEdge.height
     property alias startX: canvas.startX
     property alias startY: canvas.startY
     property alias endX: canvas.endX
@@ -119,8 +121,6 @@ Item {
         objectName: "mouseArea"
 
         property var dragged: false
-        property var dragMaxX: 0
-        property var dragMaxY: 0
             
         anchors.fill: ctrlPoint
 
@@ -130,8 +130,8 @@ Item {
         drag.axis: Drag.XandYAxis
         drag.minimumX: 0
         drag.minimumY: 0
-        drag.maximumX: dragMaxX
-        drag.maximumY: dragMaxY
+        drag.maximumX: bezierEdge.workspaceWidth - ctrlPoint.width
+        drag.maximumY: bezierEdge.workspaceHeight - ctrlPoint.height
 
         onDoubleClicked: bezierEdge.edge_delete(bezierEdge.objectId)
 

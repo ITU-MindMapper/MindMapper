@@ -12,7 +12,6 @@ Item {
         anchors.fill: parent
         border.width: 0
         border.color: "black"
-        radius: 5
     }
 
     MouseArea {

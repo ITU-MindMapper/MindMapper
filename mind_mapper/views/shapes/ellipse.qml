@@ -7,6 +7,8 @@ Item {
 
     // Object ID
     property var objectId
+    property var workspaceWidth: 0
+    property var workspaceHeight: 0
 
     // Background color
     property alias backgroundColor: canvas.backgroundColor
@@ -17,12 +19,13 @@ Item {
     property alias textSize:  text.textsize
     property alias textColor: text.textcolor
 
+    
     // Signals
     signal node_delete(var id)
     signal node_position_changed(var id, var x, var y)
     signal node_text_changed(var id, var new_text)
     signal node_connect(var id)
-    
+
     // Content
     Rectangle {
         id: content
@@ -61,8 +64,6 @@ Item {
 
         property var dragged: false
         property var ispress: false
-        property var dragMaxX: 0
-        property var dragMaxY: 0
 
         anchors.fill: parent
         
@@ -72,8 +73,8 @@ Item {
         drag.axis: Drag.XandYAxis
         drag.minimumX: 0
         drag.minimumY: 0
-        drag.maximumX: dragMaxX
-        drag.maximumY: dragMaxY
+        drag.maximumX: ellipseShape.workspaceWidth - parent.width
+        drag.maximumY: ellipseShape.workspaceHeight - parent.height
 
         onClicked: {
             if(mouse.button == Qt.LeftButton)
@@ -88,10 +89,8 @@ Item {
         }
 
         onPressed: {
-            if(mouse.button == Qt.LeftButton){
-                dragged = false
-                ispress = true
-            }
+            dragged = false
+            ispress = true
         }
 
         onPositionChanged: {
