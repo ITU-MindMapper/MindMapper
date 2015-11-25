@@ -7,6 +7,8 @@ Item {
 
     // Object ID
     property var objectId
+    property var workspaceWidth
+    property var workspaceHeight
 
     // Background color
     property alias backgroundColor: content.color
@@ -44,8 +46,6 @@ Item {
 
         property var dragged: false
         property var ispress: false
-        property var dragMaxX: 0
-        property var dragMaxY: 0
 
         anchors.fill: parent
         
@@ -55,8 +55,8 @@ Item {
         drag.axis: Drag.XandYAxis
         drag.minimumX: 0
         drag.minimumY: 0
-        drag.maximumX: dragMaxX
-        drag.maximumY: dragMaxY
+        drag.maximumX: rectangleShape.workspaceWidth - parent.width
+        drag.maximumY: rectangleShape.workspaceHeight - parent.height
 
         onClicked: {
             if(mouse.button == Qt.LeftButton)
@@ -71,10 +71,8 @@ Item {
         }
 
         onPressed: {
-            if(mouse.button == Qt.LeftButton){
-                dragged = false
-                ispress = true
-            }
+            dragged = false
+            ispress = true
         }
 
         onPositionChanged: {

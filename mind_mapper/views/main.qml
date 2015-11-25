@@ -12,7 +12,7 @@ Item {
     signal load()
     signal node_color_sel(var color)
     signal edge_color_sel(var color)
-
+    signal window_resize(var width, var height)
 
     // Connection Pointer attributes
     property var connecting
@@ -51,8 +51,15 @@ Item {
             height: parent.height
             color: "white"
 
-            onWidthChanged: gridcanvas.requestPaint();
-            onHeightChanged: gridcanvas.requestPaint();
+            onWidthChanged: {
+                gridcanvas.requestPaint();
+                mainWindow.window_resize(width, height);
+            }
+
+            onHeightChanged: {
+                gridcanvas.requestPaint();
+                mainWindow.window_resize(width, height);
+            }
 
             // Background grid for better work
             Canvas {
