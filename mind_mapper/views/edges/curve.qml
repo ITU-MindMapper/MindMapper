@@ -1,4 +1,5 @@
 import QtQuick 2.5
+import "edgefunctions.js" as Func
 
 Item {
     
@@ -17,44 +18,13 @@ Item {
     property alias ctrlX: ctrlPoint.x
     property alias ctrlY: ctrlPoint.y
     property alias color: canvas.edgeColor
+    property alias thickness: canvas.thickness
+    property alias arrow: canvas.arrow
+    property alias spiked: canvas.spiked
 
     // Signals
     signal edge_delete(var id)
     signal edge_position_changed(var id, var x, var y)
-
-    function solveQuadraticEq(a, b, c) {
-        var d = Math.pow(b,2) - 4*a*c;
-        var x1 = 0;
-        var x2 = 0;
-        if (d > 0) {
-            x1 = (-b + Math.sqrt(d))/(2*a);
-            x2 = (-b - Math.sqrt(d))/(2*a);
-        }
-        return [x1, x2];
-    }
-
-    function getPoints(sx, sy, px, py, thickness) {
-        var r = thickness/2;
-        var a = px - sx;
-        var b = py - sy;
-        var c = (-a)*sx - b*sy;
-        var k = -(a/b);
-        var q = -(c/b);
-
-        var o = q - sy;
-
-        var result = solveQuadraticEq(
-            1 + Math.pow(k,2),
-            2*k*o - 2*sx,
-            Math.pow(sx,2) + Math.pow(o,2) - Math.pow(r,2));
-
-        var x1 = result[0];
-        var x2 = result[1];
-        var y1 = k*x1 + q;
-        var y2 = k*x2 + q;
-
-        return [x1,y1,x2,y2];
-    } 
 
     // Content
     Rectangle {
@@ -74,8 +44,10 @@ Item {
             property var endY: 0
             property var ctrlX: ctrlPoint.x + 5
             property var ctrlY: ctrlPoint.y + 5
-            property var thickness: 20;
-            property var edgeColor: "black"
+            property var thickness
+            property var edgeColor
+            property var spiked
+            property var arrow
 
             onStartXChanged:requestPaint();
             onStartYChanged:requestPaint();
@@ -86,23 +58,32 @@ Item {
             onThicknessChanged:requestPaint();
 
             onPaint: {
-                var realCtrlX = 2*ctrlX - 0.5*startX - 0.5*endX
-                var realCtrlY = 2*ctrlY - 0.5*startY - 0.5*endY
-
-                var sp = getPoints(startX, startY, ctrlX, ctrlY, thickness)
-
+                var realCtrlX = 2*ctrlX - 0.5*startX - 0.5*endX;
+                var realCtrlY = 2*ctrlY - 0.5*startY - 0.5*endY;
                 var ctx = getContext("2d");
-                ctx.reset()
-                ctx.strokeStyle = edgeColor
-                ctx.fillStyle = edgeColor
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(sp[0], sp[1]);
-                ctx.quadraticCurveTo(realCtrlX, realCtrlY, endX, endY);
-                ctx.quadraticCurveTo(realCtrlX, realCtrlY, sp[2], sp[3]);
-                ctx.closePath();
-                ctx.fill()
-                ctx.stroke();
+                ctx.reset();
+                ctx.strokeStyle = edgeColor;
+
+                if(spiked == 0){
+                    ctx.lineWidth = thickness;
+                    ctx.moveTo(startX, startY);
+                    ctx.quadraticCurveTo(realCtrlX, realCtrlY, endX, endY);
+                    ctx.stroke();
+                }
+                else {
+                    var sp = Func.getPoints(startX, startY, 
+                                            ctrlX, ctrlY,
+                                            thickness);
+                    ctx.fillStyle = edgeColor;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(sp[0], sp[1]);
+                    ctx.quadraticCurveTo(realCtrlX, realCtrlY, endX, endY);
+                    ctx.quadraticCurveTo(realCtrlX, realCtrlY, sp[2], sp[3]);
+                    ctx.closePath();
+                    ctx.fill()
+                    ctx.stroke();
+                }
             }
         }
     }

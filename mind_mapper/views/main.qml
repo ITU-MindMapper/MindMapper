@@ -12,6 +12,7 @@ Item {
     signal load()
     signal node_color_sel(var color)
     signal edge_color_sel(var color)
+    signal edge_type_sel(var type, var spiked, var arrow)
     signal window_resize(var width, var height)
 
     // Connection Pointer attributes
@@ -28,6 +29,8 @@ Item {
         nodeColorSelButton.hoverEnabled = true;
         edgeColorToolbar.visible = false;
         edgeColorSelButton.hoverEnabled = true;
+        edgeTypeToolbar.visible = false;
+        edgeTypeSelButton.hoverEnabled = true;
     }
 
     // Beckground
@@ -151,6 +154,38 @@ Item {
                 }
             }
 
+            EdgeTypeToolbar {
+                id: edgeTypeToolbar
+                anchors.right: parent.right
+                visible: false
+                z: 4
+                y: edgeTypeSelButton.y
+
+                onClicked: {
+                    /*
+                     * type 1 = curve, type 0 = line
+                     * spiked 1 = true, spiked 0 = false
+                     * arrow 1 = true, arrow 0 = false
+                     */
+                    if(number == 0){
+                        mainWindow.edge_type_sel(0,0,0);
+                        edgeTypeSelButton.iconsource = "resources/line.png";
+                    }
+                    else if(number == 1){
+                        mainWindow.edge_type_sel(0,1,0);
+                        edgeTypeSelButton.iconsource = "resources/linespike.png";
+                    }
+                    else if(number == 2){
+                        mainWindow.edge_type_sel(1,0,0);
+                        edgeTypeSelButton.iconsource = "resources/curve.png";
+                    }
+                    else{
+                        mainWindow.edge_type_sel(1,1,0);
+                        edgeTypeSelButton.iconsource = "resources/curvespike.png";
+                    }
+                }
+            }
+
             // Workspace mouse area
             MouseArea {
                 anchors.fill: parent
@@ -235,6 +270,28 @@ Item {
                         mainWindow.clearToolbars();
                         edgeColorToolbar.visible = true;
                         edgeColorSelButton.hoverEnabled = false;
+                    }
+                }
+            }
+
+            CustomButton {
+                id: edgeTypeSelButton
+                height: 40
+                width: parent.width
+                nohovercolor: "#E5E5E5"
+                hovercolor: "#D0D0D0"
+                textvalue: "Type"
+                iconsource: "resources/line.png"
+                onClicked: {
+                    hoverEnabled = !hoverEnabled;
+                    if(edgeTypeToolbar.visible == true){
+                        edgeTypeToolbar.visible = false;
+                        edgeTypeSelButton.hoverEnabled = true;
+                    }
+                    else {
+                        mainWindow.clearToolbars();
+                        edgeTypeToolbar.visible = true;
+                        edgeTypeSelButton.hoverEnabled = false;
                     }
                 }
             }

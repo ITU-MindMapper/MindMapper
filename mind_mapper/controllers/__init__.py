@@ -19,7 +19,9 @@ class Controller(object):
         self.node_height = 50
         self.node_background = "#9dd2e7"
         self.edge_color = "#9dd2e7"
-        self.edge_thickness = 1
+        self.edge_thickness = 10
+        self.edge_spiked = 0
+        self.edge_arrow = 0
         self.edge_type = 0
         self.connectNode = None
         self.project = Project()
@@ -79,13 +81,13 @@ class Controller(object):
         edge = Edge(x=int((node1.x + node2.x) / 2),
                     y=int((node1.y + node2.y) / 2),
                     thickness=self.edge_thickness, type=self.edge_type,
+                    spiked=self.edge_spiked, arrow=self.edge_arrow,
                     node1=node1.id, node2=node2.id, id=self.EDGE_IDS,
                     color=self.edge_color)
         self.project.edges[self.EDGE_IDS] = edge
         self.edgeViews[self.EDGE_IDS] = self.view_manager.create_edge(
             edge, node1, node2)
         self.EDGE_IDS += 1
-        self.edge_type = self.EDGE_IDS % 2
 
     def node_text_changed(self, id, text):
         logging.debug('Text of node ' + str(id) + ' changed to: ' + text)
@@ -154,8 +156,8 @@ class Controller(object):
     def edge_position_changed(self, id, x, y):
         self.project.edges[int(id)].x = int(x)
         self.project.edges[int(id)].y = int(y)
-        logging.debug('Position of edge ' + str(id) + ' ctrpoint changed to: ['
-                      + str(int(x)) + ',' + str(int(y)) + ']\n' +
+        logging.debug('Position of edge ' + str(id) + ' ctrpoint changed' +
+                      ' to: [' + str(int(x)) + ',' + str(int(y)) + ']\n' +
                       str(self.project.edges[int(id)]))
 
     def node_connect(self, id):
@@ -191,6 +193,11 @@ class Controller(object):
 
     def edge_color_sel(self, color):
         self.edge_color = color.name()
+
+    def edge_type_sel(self, type, spiked, arrow):
+        self.edge_type = int(type)
+        self.edge_spiked = int(spiked)
+        self.edge_arrow = int(arrow)
 
     def window_resize(self, width, height):
         for key, view in self.edgeViews.items():
