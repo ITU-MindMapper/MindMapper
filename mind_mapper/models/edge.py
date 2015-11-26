@@ -9,6 +9,8 @@ class Edge(Model):
             "id": None,
             "type": None,
             "thickness": None,
+            "spiked": None,
+            "arrow": None,
             "color": None,
             "node1": None,
             "node2": None,
@@ -34,6 +36,8 @@ class Edge(Model):
         self.id = int(self.id)
         self.type = int(self.type)
         self.thickness = int(self.thickness)
+        self.spiked = int(self.spiked)
+        self.arrow = int(self.arrow)
         self.node1 = int(self.node1)
         self.node2 = int(self.node2)
         self.x = int(self.x)

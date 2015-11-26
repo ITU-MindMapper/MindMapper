@@ -1,4 +1,5 @@
 import QtQuick 2.5
+import "edgefunctions.js" as Func
 
 Item {
     
@@ -17,6 +18,9 @@ Item {
     property alias ctrlX: ctrlPoint.x
     property alias ctrlY: ctrlPoint.y
     property alias color: canvas.edgeColor
+    property alias thickness: canvas.thickness
+    property alias arrow: canvas.arrow
+    property alias spiked: canvas.spiked
 
     // Signals
     signal edge_delete(var id)
@@ -43,8 +47,10 @@ Item {
             property var startY: 0
             property var endX: 0
             property var endY: 0
-            property var thickness: 5
+            property var thickness
             property var edgeColor
+            property var arrow
+            property var spiked
 
             onStartXChanged:requestPaint();
             onStartYChanged:requestPaint();
@@ -54,14 +60,31 @@ Item {
 
             onPaint: {
                 var ctx = getContext("2d");
-                ctx.reset()
-                ctx.strokeStyle = edgeColor
-                ctx.lineWidth = thickness;
-                ctx.beginPath();
-                ctx.moveTo(startX, startY);
-                ctx.lineTo(endX, endY);
-                ctx.stroke()
-                straightEdge.moveCtrlPoint();
+                ctx.reset();
+                ctx.strokeStyle = edgeColor;
+                
+                if(spiked == 0){
+                    ctx.lineWidth = thickness;
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(endX, endY);
+                    ctx.stroke();
+                    straightEdge.moveCtrlPoint();
+                }
+                else {
+                    var sp = Func.getPoints(startX, startY, 
+                                            ctrlX, ctrlY,
+                                            thickness);
+                    ctx.fillStyle = edgeColor;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(sp[0], sp[1]);
+                    ctx.lineTo(endX, endY);
+                    ctx.lineTo(sp[2], sp[3]);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                    straightEdge.moveCtrlPoint();                  
+                }
             }
         }
     }

@@ -3,15 +3,24 @@ import QtQuick 2.5
 Item {
     id: container
 
-    property alias color: rect.color
+    property alias image: image.source
+    property var number: 0
 
-    signal clicked(color color)
+    signal clicked(var number)
 
     anchors.horizontalCenter : parent.horizontalCenter
 
     Rectangle {
         id: rect
         anchors.fill: parent
+
+        Image {
+            id: image
+            width: parent.width
+            height: parent.height
+            anchors.fill: parent
+            fillMode: Image.PreserveAspectFit
+        }
     }
 
     MouseArea {
@@ -29,6 +38,6 @@ Item {
             container.height -= 5;
         }
 
-        onClicked: container.clicked(rect.color)
+        onClicked: container.clicked(container.number)
     }
 }

@@ -9,7 +9,7 @@ import os
 class View(object):
 
     shapes = ["rectangle", "ellipse"]
-    edgetypes = ["bezier", "straight"]
+    edgetypes = ["line", "curve"]
 
     def __init__(self):
         self._controller = Controller(self)
@@ -36,6 +36,8 @@ class View(object):
             self._controller.edge_color_sel)
         self._main.rootObject().window_resize.connect(
             self._controller.window_resize)
+        self._main.rootObject().edge_type_sel.connect(
+            self._controller.edge_type_sel)
         self._main.setProperty("width", 1000)
         self._main.setProperty("height", 800)
         self._main.show()
@@ -105,6 +107,9 @@ class View(object):
         qml_edge.rootObject().setProperty("endX", str(node2.x))
         qml_edge.rootObject().setProperty("endY", str(node2.y))
         qml_edge.rootObject().setProperty("color", str(edge.color))
+        qml_edge.rootObject().setProperty("thickness", str(edge.thickness))
+        qml_edge.rootObject().setProperty("spiked", str(edge.spiked))
+        qml_edge.rootObject().setProperty("arrow", str(edge.arrow))
 
         # Sets drag boundaries
         qml_edge.rootObject().setProperty("workspaceWidth",
