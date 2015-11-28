@@ -18,6 +18,7 @@ class Controller(object):
         self.node_width = 100
         self.node_height = 50
         self.node_background = "#9dd2e7"
+        self.active_node = None
         self.edge_color = "#9dd2e7"
         self.edge_thickness = 10
         self.edge_spiked = 0
@@ -74,7 +75,8 @@ class Controller(object):
         self.project.append(node)
         self.nodeViews[self.NODE_IDS] = self.view_manager.create_node(node)
         self.NODE_IDS += 1
-        self.node_shape = self.NODE_IDS % 2
+        self.active_node = None
+        self.node_focus(node.id)
 
     def create_edge(self, node1, node2):
         print(node1.id, node2.id)
@@ -100,8 +102,12 @@ class Controller(object):
     def node_position_changed(self, id, x, y):
         logging.debug('Position of node ' + str(id) + ' changed to: [' +
                       str(int(x)) + ',' + str(int(y)) + ']')
-        self.project.nodes[int(id)].x = int(x)
-        self.project.nodes[int(id)].y = int(y)
+        self.active_node.x = int(x)
+        self.active_node.y = int(y)
+        self.view_manager._main.rootObject().setProperty(
+            "activeNodeX", int(x))
+        self.view_manager._main.rootObject().setProperty(
+            "activeNodeY", int(y))
         self.view_manager.node_update(self.project.nodes[int(id)])
 
         # Connection indicator modification
@@ -146,6 +152,9 @@ class Controller(object):
             self.edge_delete(edge_id)
         if self.connectNode and self.connectNode.id == int(id):
             self.connectNode = None
+        self.active_node = None
+        self.view_manager._main.rootObject().setProperty(
+            "hasActiveNode", False)
 
     def edge_delete(self, id):
         logging.debug('Delete of edge ' + str(id) + ' issued')
@@ -187,9 +196,16 @@ class Controller(object):
         self.connectNode = None
         self.view_manager._main.rootObject().setProperty(
             "connecting", False)
+        self.view_manager._main.rootObject().setProperty(
+            "hasActiveNode", False)
+        self.active_node = None
 
     def node_color_sel(self, color):
         self.node_background = color.name()
+        if self.active_node is not None:
+            self.nodeViews[self.active_node.id].rootObject().setProperty(
+                "backgroundColor", str(color.name()))
+            self.active_node.background = str(color.name())
 
     def edge_color_sel(self, color):
         self.edge_color = color.name()
@@ -199,6 +215,9 @@ class Controller(object):
         self.edge_spiked = int(spiked)
         self.edge_arrow = int(arrow)
 
+    def node_shape_sel(self, shape):
+        self.node_shape = int(shape)
+
     def window_resize(self, width, height):
         for key, view in self.edgeViews.items():
             view.rootObject().setProperty("workspaceWidth", str(width))
@@ -206,3 +225,29 @@ class Controller(object):
         for key, view in self.nodeViews.items():
             view.rootObject().setProperty("workspaceWidth", str(width))
             view.rootObject().setProperty("workspaceHeight", str(height))
+
+    def node_focus(self, id):
+        self.active_node = self.project.nodes[int(id)]
+
+        self.view_manager._main.rootObject().setProperty(
+            "hasActiveNode", False)
+        self.view_manager._main.rootObject().setProperty(
+            "activeNodeColor", str(self.active_node.background))
+        self.view_manager._main.rootObject().setProperty(
+            "activeNodeShape", self.active_node.shape)
+        self.view_manager._main.rootObject().setProperty(
+            "activeNodeWidth", self.active_node.width)
+        self.view_manager._main.rootObject().setProperty(
+            "activeNodeHeigth", self.active_node.height)
+        self.view_manager._main.rootObject().setProperty(
+            "activeNodeX", self.active_node.x)
+        self.view_manager._main.rootObject().setProperty(
+            "activeNodeY", self.active_node.y)
+        self.view_manager._main.rootObject().setProperty(
+            "activeNodeText", str(self.active_node.text.text))
+        self.view_manager._main.rootObject().setProperty(
+            "activeNodeTextSize", self.active_node.text.size)
+        self.view_manager._main.rootObject().setProperty(
+            "activeNodeTextColor", str(self.active_node.text.color))
+        self.view_manager._main.rootObject().setProperty(
+            "hasActiveNode", True)

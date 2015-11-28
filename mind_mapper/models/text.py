@@ -1,4 +1,5 @@
 from mind_mapper.models import Model
+import re
 
 
 class Text(Model):
@@ -25,6 +26,6 @@ class Text(Model):
                 "size, color, font are required only but have:\n" +
                 str(self.keys()))
         self.deserialize_attr(xml)
-        self.text = xml.text
+        self.text = re.sub('\n', '', xml.text)
 
     __repr__ = __str__

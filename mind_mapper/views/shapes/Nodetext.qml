@@ -40,11 +40,11 @@ Item {
         focus: true
         visible: false
         
-        onAccepted: {
+        onEditingFinished: {
             text.text = inputField.text
             inputField.visible = false
-            inputField.focus = false
             container.textChanged(text.text)
+            container.inputting = false
         }
     }
 }

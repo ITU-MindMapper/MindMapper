@@ -38,6 +38,8 @@ class View(object):
             self._controller.window_resize)
         self._main.rootObject().edge_type_sel.connect(
             self._controller.edge_type_sel)
+        self._main.rootObject().node_shape_sel.connect(
+            self._controller.node_shape_sel)
         self._main.setProperty("width", 1000)
         self._main.setProperty("height", 800)
         self._main.show()
@@ -77,6 +79,8 @@ class View(object):
             self._controller.node_position_changed)
         qml_node.rootObject().node_connect.connect(
             self._controller.node_connect)
+        qml_node.rootObject().node_focus.connect(
+            self._controller.node_focus)
 
         # Position to mouse click
         qml_node.rootObject().setX(node.x - node.width / 2)

@@ -25,6 +25,9 @@ Item {
     signal node_position_changed(var id, var x, var y)
     signal node_text_changed(var id, var new_text)
     signal node_connect(var id)
+    signal node_focus(var id)
+
+    onBackgroundColorChanged: canvas.requestPaint()
 
     // Content
     Rectangle {
@@ -77,8 +80,10 @@ Item {
         drag.maximumY: ellipseShape.workspaceHeight - parent.height
 
         onClicked: {
-            if(mouse.button == Qt.LeftButton)
+            if(mouse.button == Qt.LeftButton){
                 text.inputting = true;
+                ellipseShape.node_focus(ellipseShape.objectId);
+            }
             else if (mouse.button == Qt.RightButton)
                 ellipseShape.node_connect(ellipseShape.objectId);
         }
@@ -91,6 +96,7 @@ Item {
         onPressed: {
             dragged = false
             ispress = true
+            ellipseShape.node_focus(ellipseShape.objectId);
         }
 
         onPositionChanged: {

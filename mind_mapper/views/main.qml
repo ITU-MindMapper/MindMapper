@@ -1,5 +1,6 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
+import QtQml 2.2
 
 Item {
     id: mainWindow
@@ -13,6 +14,7 @@ Item {
     signal node_color_sel(var color)
     signal edge_color_sel(var color)
     signal edge_type_sel(var type, var spiked, var arrow)
+    signal node_shape_sel(var shape)
     signal window_resize(var width, var height)
 
     // Connection Pointer attributes
@@ -22,7 +24,35 @@ Item {
     property alias connectingToX: connectionPointer.endX
     property alias connectingToY: connectionPointer.endY
 
+    // Active node (AN) properties
+    property color activeNodeColor
+    property var activeNodeShape
+    property var activeNodeWidth
+    property var activeNodeHeigth
+    property var activeNodeX
+    property var activeNodeY
+    property var activeNodeText
+    property var activeNodeTextSize
+    property var activeNodeTextColor
+    property var hasActiveNode: false
+
+    // Active edge (AE) properties
+    property color activeEdgeColor
+    property var activeEdgeType
+
     onConnectingChanged: connectionPointer.requestPaint()
+
+    onHasActiveNodeChanged: {
+        if(hasActiveNode == true){
+            nodeColorSelButton.iconcolor = mainWindow.activeNodeColor;
+            mainWindow.node_color_sel(mainWindow.activeNodeColor);
+            if(mainWindow.activeNodeShape == 0)
+                nodeShapeSelButton.iconsource = "resources/rectangle.png";
+            else
+                nodeShapeSelButton.iconsource = "resources/circle.png";
+            mainWindow.node_shape_sel(mainWindow.activeNodeShape);
+        }
+    }
 
     function clearToolbars(){
         nodeColorToolbar.visible = false;
@@ -31,6 +61,8 @@ Item {
         edgeColorSelButton.hoverEnabled = true;
         edgeTypeToolbar.visible = false;
         edgeTypeSelButton.hoverEnabled = true;
+        nodeShapeToolbar.visible = false;
+        nodeShapeSelButton.hoverEnabled = true;
     }
 
     // Beckground
@@ -130,6 +162,20 @@ Item {
                 }
             } // end of connection pointer
 
+            // Active node highlighter
+            Rectangle {
+                id: nodeHighlighter
+                property alias shape: mainWindow.activeNodeShape
+                width: mainWindow.activeNodeWidth + 30
+                height: mainWindow.activeNodeHeigth + 30
+                color: "#d8d8d8"
+                opacity: 0.5
+                visible: mainWindow.hasActiveNode
+                x: mainWindow.activeNodeX - width/2
+                y: mainWindow.activeNodeY - height/2
+                z: 2
+            }
+
             ColorToolbar {
                 id: nodeColorToolbar
                 anchors.right: parent.right
@@ -186,6 +232,27 @@ Item {
                 }
             }
 
+            NodeShapeToolbar {
+                id: nodeShapeToolbar
+                anchors.right: parent.right
+                visible: false
+                z: 4
+                y: nodeShapeSelButton.y
+
+                onClicked: {
+                    /*
+                     * type 1 = curve, type 0 = line
+                     * spiked 1 = true, spiked 0 = false
+                     * arrow 1 = true, arrow 0 = false
+                     */
+                    mainWindow.node_shape_sel(number);
+                    if(number == 0)
+                        nodeShapeSelButton.iconsource = "resources/rectangle.png";
+                    else
+                        nodeShapeSelButton.iconsource = "resources/circle.png";
+                }
+            }
+
             // Workspace mouse area
             MouseArea {
                 anchors.fill: parent
@@ -230,13 +297,19 @@ Item {
                 onClicked: mainWindow.load()
             }
 
+            MenuLabel {
+                text: "Node"
+                height: 40
+                width: parent.width
+            }
+
             CustomButton {
                 id: nodeColorSelButton
                 height: 40
                 width: parent.width
                 nohovercolor: "#E5E5E5"
                 hovercolor: "#D0D0D0"
-                textvalue: "Node"
+                textvalue: "Color"
                 iconcolor: "#9dd2e7"
                 onClicked: {
                     hoverEnabled = !hoverEnabled;
@@ -253,12 +326,40 @@ Item {
             }
 
             CustomButton {
+                id: nodeShapeSelButton
+                height: 40
+                width: parent.width
+                nohovercolor: "#E5E5E5"
+                hovercolor: "#D0D0D0"
+                textvalue: "Shape"
+                iconsource: "resources/rectangle.png"
+                onClicked: {
+                    hoverEnabled = !hoverEnabled;
+                    if(nodeShapeToolbar.visible == true){
+                        nodeShapeToolbar.visible = false;
+                        nodeShapeSelButton.hoverEnabled = true;
+                    }
+                    else {
+                        mainWindow.clearToolbars();
+                        nodeShapeToolbar.visible = true;
+                        nodeShapeSelButton.hoverEnabled = false;
+                    }
+                }
+            }
+
+            MenuLabel {
+                text: "Edge"
+                height: 40
+                width: parent.width
+            }
+
+            CustomButton {
                 id: edgeColorSelButton
                 height: 40
                 width: parent.width
                 nohovercolor: "#E5E5E5"
                 hovercolor: "#D0D0D0"
-                textvalue: "Edge"
+                textvalue: "Color"
                 iconcolor: "#9dd2e7"
                 onClicked: {
                     hoverEnabled = !hoverEnabled;
