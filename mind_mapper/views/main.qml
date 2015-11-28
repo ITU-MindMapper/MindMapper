@@ -342,17 +342,15 @@ Item {
 
 
             // Active node highlighter
-            Rectangle {
+            NodeHighlighter {
                 id: nodeHighlighter
-                property alias shape: mainWindow.activeNodeShape
+                shape: mainWindow.activeNodeShape
                 width: mainWindow.activeNodeWidth + 30
                 height: mainWindow.activeNodeHeight + 30
                 color: "#d8d8d8"
-                opacity: 0.5
                 visible: mainWindow.hasActiveNode
                 x: mainWindow.activeNodeX - width/2
                 y: mainWindow.activeNodeY - height/2
-                z: 2
             } // end of active node highlighter
 
             // Workspace mouse area
