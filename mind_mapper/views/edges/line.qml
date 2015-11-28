@@ -4,13 +4,14 @@ import "edgefunctions.js" as Func
 Item {
     
     // Id of the shape
-    id: straightEdge
+    id: container
 
     // Object ID
     property var objectId
+    property alias isActive: activityIndicator.visible
 
-    property alias workspaceWidth: straightEdge.width
-    property alias workspaceHeight: straightEdge.height
+    property alias workspaceWidth: container.width
+    property alias workspaceHeight: container.height
     property alias startX: canvas.startX
     property alias startY: canvas.startY
     property alias endX: canvas.endX
@@ -25,10 +26,13 @@ Item {
     // Signals
     signal edge_delete(var id)
     signal edge_position_changed(var id, var x, var y)
+    signal edge_focus(var id)
+
+    onColorChanged: canvas.requestPaint()
 
     function moveCtrlPoint(){
-        straightEdge.ctrlX = (parseInt(startX) + parseInt(endX))/2 - 5;
-        straightEdge.ctrlY = (parseInt(startY) + parseInt(endY))/2 - 5;
+        container.ctrlX = (parseInt(startX) + parseInt(endX))/2 - 5;
+        container.ctrlY = (parseInt(startY) + parseInt(endY))/2 - 5;
     }
 
     // Content
@@ -68,7 +72,7 @@ Item {
                     ctx.moveTo(startX, startY);
                     ctx.lineTo(endX, endY);
                     ctx.stroke();
-                    straightEdge.moveCtrlPoint();
+                    container.moveCtrlPoint();
                 }
                 else {
                     var sp = Func.getPoints(startX, startY, 
@@ -83,7 +87,7 @@ Item {
                     ctx.closePath();
                     ctx.fill();
                     ctx.stroke();
-                    straightEdge.moveCtrlPoint();                  
+                    container.moveCtrlPoint();                  
                 }
             }
         }
@@ -97,6 +101,18 @@ Item {
         radius: 5
     }
 
+    Rectangle {
+        id: activityIndicator
+        width: 50
+        height: 50
+        color: "#d8d8d8"
+        opacity: 0.5
+        radius: 25
+        x: ctrlPoint.x - (width - ctrlPoint.width) / 2
+        y: ctrlPoint.y - (height - ctrlPoint.height) / 2
+        visible: false
+    }
+
     // MouseArea
     MouseArea {
         id: mouseArea
@@ -106,6 +122,8 @@ Item {
 
         acceptedButtons: Qt.LeftButton
 
-        onDoubleClicked: straightEdge.edge_delete(straightEdge.objectId)
+        onClicked: container.edge_focus(container.objectId);
+
+        onDoubleClicked: container.edge_delete(container.objectId)
     }
 }

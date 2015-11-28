@@ -40,6 +40,12 @@ class View(object):
             self._controller.edge_type_sel)
         self._main.rootObject().node_shape_sel.connect(
             self._controller.node_shape_sel)
+        self._main.rootObject().node_width_changed.connect(
+            self._controller.node_width_changed)
+        self._main.rootObject().node_height_changed.connect(
+            self._controller.node_height_changed)
+        self._main.rootObject().edge_thickness_changed.connect(
+            self._controller.edge_thickness_changed)
         self._main.setProperty("width", 1000)
         self._main.setProperty("height", 800)
         self._main.show()
@@ -126,6 +132,8 @@ class View(object):
             self._controller.edge_delete)
         qml_edge.rootObject().edge_position_changed.connect(
             self._controller.edge_position_changed)
+        qml_edge.rootObject().edge_focus.connect(
+            self._controller.edge_focus)
 
         return qml_edge
 

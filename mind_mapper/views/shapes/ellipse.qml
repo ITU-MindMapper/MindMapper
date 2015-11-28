@@ -3,7 +3,7 @@ import QtQuick 2.5
 Item {
     
     // Id of the shape
-    id: ellipseShape
+    id: container
 
     // Object ID
     property var objectId
@@ -57,7 +57,7 @@ Item {
         id: text
         width: parent.width
         height: parent.height
-        onTextChanged: ellipseShape.node_text_changed(ellipseShape.objectId, text.nodetext)
+        onTextChanged: container.node_text_changed(container.objectId, text.nodetext)
     }
 
     // MouseArea
@@ -72,40 +72,40 @@ Item {
         
         acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-        drag.target: ellipseShape
+        drag.target: container
         drag.axis: Drag.XandYAxis
         drag.minimumX: 0
         drag.minimumY: 0
-        drag.maximumX: ellipseShape.workspaceWidth - parent.width
-        drag.maximumY: ellipseShape.workspaceHeight - parent.height
+        drag.maximumX: container.workspaceWidth - parent.width
+        drag.maximumY: container.workspaceHeight - parent.height
 
         onClicked: {
             if(mouse.button == Qt.LeftButton){
                 text.inputting = true;
-                ellipseShape.node_focus(ellipseShape.objectId);
+                container.node_focus(container.objectId);
             }
             else if (mouse.button == Qt.RightButton)
-                ellipseShape.node_connect(ellipseShape.objectId);
+                container.node_connect(container.objectId);
         }
 
         onDoubleClicked: {
             if(mouse.button == Qt.LeftButton)
-                ellipseShape.node_delete(ellipseShape.objectId)
+                container.node_delete(container.objectId)
         }
 
         onPressed: {
             dragged = false
             ispress = true
-            ellipseShape.node_focus(ellipseShape.objectId);
+            container.node_focus(container.objectId);
         }
 
         onPositionChanged: {
             dragged = true
             if(ispress == true)
-                ellipseShape.node_position_changed(
-                    ellipseShape.objectId,
-                    ellipseShape.x + ellipseShape.width / 2,
-                    ellipseShape.y + ellipseShape.height / 2);
+                container.node_position_changed(
+                    container.objectId,
+                    container.x + container.width / 2,
+                    container.y + container.height / 2);
         }
 
         onReleased: {

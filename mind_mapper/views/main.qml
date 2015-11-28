@@ -5,17 +5,36 @@ import QtQml 2.2
 Item {
     id: mainWindow
 
-    signal toolbar_sel(var id)
+    /**
+     * Signals
+     */
+
+    // Node signals
     signal create_node(var x, var y)
-    signal mouse_position(var x, var y)
+    signal node_color_sel(var color)
+    signal node_shape_sel(var shape)
+    signal node_width_changed(var width)
+    signal node_height_changed(var height)
+
+    // Edge signals
+    signal edge_color_sel(var color)
+    signal edge_type_sel(var type, var spiked, var arrow)
+    signal edge_thickness_changed(var thickness)
+
+    // General signals
     signal lose_focus()
     signal save()
     signal load()
-    signal node_color_sel(var color)
-    signal edge_color_sel(var color)
-    signal edge_type_sel(var type, var spiked, var arrow)
-    signal node_shape_sel(var shape)
     signal window_resize(var width, var height)
+    signal mouse_position(var x, var y)
+
+    /**
+     * Properties
+     */
+
+    // Menu attributes
+    property color menuIdleButtonColor: "#E5E5E5"
+    property color menuHoveredButtonColor: "#D0D0D0"
 
     // Connection Pointer attributes
     property var connecting
@@ -24,11 +43,11 @@ Item {
     property alias connectingToX: connectionPointer.endX
     property alias connectingToY: connectionPointer.endY
 
-    // Active node (AN) properties
+    // Active node properties (set by controller)
     property color activeNodeColor
     property var activeNodeShape
     property var activeNodeWidth
-    property var activeNodeHeigth
+    property var activeNodeHeight
     property var activeNodeX
     property var activeNodeY
     property var activeNodeText
@@ -36,12 +55,56 @@ Item {
     property var activeNodeTextColor
     property var hasActiveNode: false
 
-    // Active edge (AE) properties
+    // Active edge properties (set by controller)
     property color activeEdgeColor
+    property var activeEdgeThickness
     property var activeEdgeType
+    property var activeEdgeSpiked
+    property var activeEdgeArrow
+    property var hasActiveEdge: false
+
+    /**
+     * Functions
+     */
+
+    // Function to clear opened toolbar
+    function toggleToolbar(objectName){
+        if(objectName != "nodeColorSelButton"){
+            nodeColorSelButton.hoverEnabled = true;
+            nodeColorToolbar.show = false;
+        }
+        if(objectName != "edgeColorSelButton"){
+            edgeColorSelButton.hoverEnabled = true;
+            edgeColorToolbar.show = false;
+        }
+        if(objectName != "edgeTypeSelButton"){
+            edgeTypeSelButton.hoverEnabled = true;
+            edgeTypeToolbar.show = false;
+        }
+        if(objectName != "nodeShapeSelButton"){
+            nodeShapeSelButton.hoverEnabled = true;
+            nodeShapeToolbar.show = false;
+        }
+    }
+
+    // Function to get edge icon based on type, spiked and arrow property
+    function getEdgeIcon(type, spiked, arrow){
+        if((mainWindow.activeEdgeType == 0) &&
+           (mainWindow.activeEdgeSpiked == 0))
+            return "resources/line.png";
+        else if((mainWindow.activeEdgeType == 0) &&
+                (mainWindow.activeEdgeSpiked == 1))
+            return "resources/linespike.png";
+        else if((mainWindow.activeEdgeType == 1) &&
+                (mainWindow.activeEdgeSpiked == 0))
+            return "resources/curve.png";
+        else
+            return "resources/curvespike.png";
+    }
 
     onConnectingChanged: connectionPointer.requestPaint()
 
+    // If active node is changed, node toolbars are changed
     onHasActiveNodeChanged: {
         if(hasActiveNode == true){
             nodeColorSelButton.iconcolor = mainWindow.activeNodeColor;
@@ -51,18 +114,25 @@ Item {
             else
                 nodeShapeSelButton.iconsource = "resources/circle.png";
             mainWindow.node_shape_sel(mainWindow.activeNodeShape);
+            nodeWidthControl.text = mainWindow.activeNodeWidth;
+            nodeHeightControl.text = mainWindow.activeNodeHeight;
         }
     }
 
-    function clearToolbars(){
-        nodeColorToolbar.visible = false;
-        nodeColorSelButton.hoverEnabled = true;
-        edgeColorToolbar.visible = false;
-        edgeColorSelButton.hoverEnabled = true;
-        edgeTypeToolbar.visible = false;
-        edgeTypeSelButton.hoverEnabled = true;
-        nodeShapeToolbar.visible = false;
-        nodeShapeSelButton.hoverEnabled = true;
+    // If active edge is changed, edge toolbars are changed
+    onHasActiveEdgeChanged: {
+        if(hasActiveEdge == true){
+            edgeColorSelButton.iconcolor = mainWindow.activeEdgeColor;
+            mainWindow.edge_color_sel(mainWindow.activeEdgeColor);
+            edgeTypeSelButton.iconsource = getEdgeIcon(
+                                                mainWindow.activeEdgeType,
+                                                mainWindow.activeEdgeSpiked,
+                                                mainWindow.activeEdgeArrow)
+            mainWindow.edge_type_sel(mainWindow.activeEdgeType,
+                                     mainWindow.activeEdgeSpiked,
+                                     mainWindow.activeEdgeArrow)
+            edgeThicknessControl.text = mainWindow.activeEdgeThickness;
+        }
     }
 
     // Beckground
@@ -71,7 +141,112 @@ Item {
         color: "#E5E5E5"
     }
 
-    // Layout of elements
+    ZoomIndicator {
+        id: zoomIndicator
+        width: 100
+        height: 50
+        color: "#DDDDDD"
+        text: parseInt(zoomScale.xScale * 100).toString() + "%"
+        show: false
+    }
+
+    /**
+     * Toolbars
+     */
+
+    // Node color toolbar
+    ColorToolbar {
+        id: nodeColorToolbar
+        anchors.right: parent.right
+        anchors.rightMargin: menu.width
+        animationDuration: 200
+        opacity: 0
+        z: 4
+
+        onClicked: {
+            mainWindow.node_color_sel(color);
+            nodeColorSelButton.iconcolor = color;
+        }
+    } // end of node color toolbar
+
+    // Edge color toolbar
+    ColorToolbar {
+        id: edgeColorToolbar
+        anchors.right: parent.right
+        anchors.rightMargin: menu.width
+        animationDuration: 200
+        opacity: 0
+        z: 4
+
+        onClicked: {
+            mainWindow.edge_color_sel(color);
+            edgeColorSelButton.iconcolor = color;
+        }
+    } // end of edge color toolbar
+
+    // Edge type toolbar
+    EdgeTypeToolbar {
+        id: edgeTypeToolbar
+        anchors.right: parent.right
+        anchors.rightMargin: menu.width
+        animationDuration: 200
+        opacity: 0
+        z: 4
+        y: edgeTypeSelButton.y
+
+        onClicked: {
+            /*
+             * type 1 = curve, type 0 = line
+             * spiked 1 = true, spiked 0 = false
+             * arrow 1 = true, arrow 0 = false
+             */
+            if(number == 0){
+                mainWindow.edge_type_sel(0,0,0);
+                edgeTypeSelButton.iconsource = "resources/line.png";
+            }
+            else if(number == 1){
+                mainWindow.edge_type_sel(0,1,0);
+                edgeTypeSelButton.iconsource = "resources/linespike.png";
+            }
+            else if(number == 2){
+                mainWindow.edge_type_sel(1,0,0);
+                edgeTypeSelButton.iconsource = "resources/curve.png";
+            }
+            else{
+                mainWindow.edge_type_sel(1,1,0);
+                edgeTypeSelButton.iconsource = "resources/curvespike.png";
+            }
+        }
+    } // end of edge type toolbar
+
+    // Node shape toolbar
+    NodeShapeToolbar {
+        id: nodeShapeToolbar
+        anchors.right: parent.right
+        anchors.rightMargin: menu.width
+        animationDuration: 200
+        opacity: 0
+        z: 4
+        y: nodeShapeSelButton.y
+
+        onClicked: {
+            /*
+             * type 1 = curve, type 0 = line
+             * spiked 1 = true, spiked 0 = false
+             * arrow 1 = true, arrow 0 = false
+             */
+            mainWindow.node_shape_sel(number);
+            if(number == 0)
+                nodeShapeSelButton.iconsource = "resources/rectangle.png";
+            else
+                nodeShapeSelButton.iconsource = "resources/circle.png";
+        }
+    } // end of node shape toolbar
+
+    /**
+     * Layout
+     */
+
     Grid {
         rows: 1
         columns: 2
@@ -85,6 +260,9 @@ Item {
             width: parent.width - menu.width
             height: parent.height
             color: "white"
+            //scale: zoom
+            transform: Scale {id: zoomScale}
+
 
             onWidthChanged: {
                 gridcanvas.requestPaint();
@@ -162,105 +340,58 @@ Item {
                 }
             } // end of connection pointer
 
+
             // Active node highlighter
             Rectangle {
                 id: nodeHighlighter
                 property alias shape: mainWindow.activeNodeShape
                 width: mainWindow.activeNodeWidth + 30
-                height: mainWindow.activeNodeHeigth + 30
+                height: mainWindow.activeNodeHeight + 30
                 color: "#d8d8d8"
                 opacity: 0.5
                 visible: mainWindow.hasActiveNode
                 x: mainWindow.activeNodeX - width/2
                 y: mainWindow.activeNodeY - height/2
                 z: 2
-            }
-
-            ColorToolbar {
-                id: nodeColorToolbar
-                anchors.right: parent.right
-                visible: false
-                z: 4
-
-                onClicked: {
-                    mainWindow.node_color_sel(color);
-                    nodeColorSelButton.iconcolor = color;
-                }
-            }
-
-            ColorToolbar {
-                id: edgeColorToolbar
-                anchors.right: parent.right
-                visible: false
-                z: 4
-
-                onClicked: {
-                    mainWindow.edge_color_sel(color);
-                    edgeColorSelButton.iconcolor = color;
-                }
-            }
-
-            EdgeTypeToolbar {
-                id: edgeTypeToolbar
-                anchors.right: parent.right
-                visible: false
-                z: 4
-                y: edgeTypeSelButton.y
-
-                onClicked: {
-                    /*
-                     * type 1 = curve, type 0 = line
-                     * spiked 1 = true, spiked 0 = false
-                     * arrow 1 = true, arrow 0 = false
-                     */
-                    if(number == 0){
-                        mainWindow.edge_type_sel(0,0,0);
-                        edgeTypeSelButton.iconsource = "resources/line.png";
-                    }
-                    else if(number == 1){
-                        mainWindow.edge_type_sel(0,1,0);
-                        edgeTypeSelButton.iconsource = "resources/linespike.png";
-                    }
-                    else if(number == 2){
-                        mainWindow.edge_type_sel(1,0,0);
-                        edgeTypeSelButton.iconsource = "resources/curve.png";
-                    }
-                    else{
-                        mainWindow.edge_type_sel(1,1,0);
-                        edgeTypeSelButton.iconsource = "resources/curvespike.png";
-                    }
-                }
-            }
-
-            NodeShapeToolbar {
-                id: nodeShapeToolbar
-                anchors.right: parent.right
-                visible: false
-                z: 4
-                y: nodeShapeSelButton.y
-
-                onClicked: {
-                    /*
-                     * type 1 = curve, type 0 = line
-                     * spiked 1 = true, spiked 0 = false
-                     * arrow 1 = true, arrow 0 = false
-                     */
-                    mainWindow.node_shape_sel(number);
-                    if(number == 0)
-                        nodeShapeSelButton.iconsource = "resources/rectangle.png";
-                    else
-                        nodeShapeSelButton.iconsource = "resources/circle.png";
-                }
-            }
+            } // end of active node highlighter
 
             // Workspace mouse area
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
 
-                onDoubleClicked: mainWindow.create_node(mouse.x, mouse.y)
+                acceptedButtons: Qt.Wheel | Qt.LeftButton | Qt.RightButton
 
-                onClicked: mainWindow.lose_focus()
+                onWheel: {
+                    if((wheel.angleDelta.y < 0)&&(zoomScale.xScale <= 2.95)){
+                        zoomIndicator.show = true
+                        zoomIndicator.restart()
+                        zoomScale.xScale += 0.1
+                        zoomScale.yScale += 0.1
+                        zoomScale.origin.x = wheel.x
+                        zoomScale.origin.y = wheel.y
+                    }
+                    else if((wheel.angleDelta.y > 0)&&(zoomScale.yScale >= 0.35)){
+                        zoomIndicator.show = true
+                        zoomIndicator.restart()
+                        zoomScale.xScale -= 0.1
+                        zoomScale.yScale -= 0.1
+                        zoomScale.origin.x = wheel.x
+                        zoomScale.origin.y = wheel.y
+                    }
+                }
+
+                onDoubleClicked: {
+                    if(mouse.button == Qt.LeftButton)
+                        mainWindow.create_node(mouse.x, mouse.y)
+                }
+
+                onClicked: {
+                    if(mouse.button == Qt.LeftButton){
+                        mainWindow.lose_focus()
+                        mainWindow.toggleToolbar()
+                    }
+                }
 
                 onPositionChanged: {
                     if(mainWindow.connecting == true)
@@ -268,6 +399,11 @@ Item {
                 }
             } // end of workspace mouse area
         } // end of workspace
+
+        /**
+         * Following column contains right hand side
+         * toolbars, buttons, controls etc
+         */
 
         // Toolbar menu
         Column {
@@ -279,135 +415,138 @@ Item {
             CustomButton {
                 height: 40
                 width: parent.width
-                color: "#E5E5E5"
-                hovercolor: "#D0D0D0"
+                color: mainWindow.menuIdleButtonColor
+                hovercolor: mainWindow.menuHoveredButtonColor
                 iconsource: "resources/save.png"
                 textvalue: "Save"
                 onClicked: mainWindow.save()
-            }
+            } // end of save button
 
             // Load button
             CustomButton {
                 height: 40
                 width: parent.width
-                nohovercolor: "#E5E5E5"
-                hovercolor: "#D0D0D0"
+                nohovercolor: mainWindow.menuIdleButtonColor
+                hovercolor: mainWindow.menuHoveredButtonColor
                 iconsource: "resources/load.png"
                 textvalue: "Load"
                 onClicked: mainWindow.load()
-            }
+            } // end of load button
 
+            // Simple text label
             MenuLabel {
                 text: "Node"
                 height: 40
                 width: parent.width
             }
 
-            CustomButton {
-                id: nodeColorSelButton
-                height: 40
-                width: parent.width
-                nohovercolor: "#E5E5E5"
-                hovercolor: "#D0D0D0"
-                textvalue: "Color"
-                iconcolor: "#9dd2e7"
-                onClicked: {
-                    hoverEnabled = !hoverEnabled;
-                    if(nodeColorToolbar.visible == true){
-                        nodeColorToolbar.visible = false;
-                        nodeColorSelButton.hoverEnabled = true;
-                    }
-                    else {
-                        mainWindow.clearToolbars();
-                        nodeColorToolbar.visible = true;
-                        nodeColorSelButton.hoverEnabled = false;
-                    }
-                }
-            }
-
+            // Node shape selection button - opens up node shape toolbar
             CustomButton {
                 id: nodeShapeSelButton
+                objectName: "nodeShapeSelButton"
                 height: 40
                 width: parent.width
-                nohovercolor: "#E5E5E5"
-                hovercolor: "#D0D0D0"
+                nohovercolor: mainWindow.menuIdleButtonColor
+                hovercolor: mainWindow.menuHoveredButtonColor
                 textvalue: "Shape"
                 iconsource: "resources/rectangle.png"
                 onClicked: {
                     hoverEnabled = !hoverEnabled;
-                    if(nodeShapeToolbar.visible == true){
-                        nodeShapeToolbar.visible = false;
-                        nodeShapeSelButton.hoverEnabled = true;
-                    }
-                    else {
-                        mainWindow.clearToolbars();
-                        nodeShapeToolbar.visible = true;
-                        nodeShapeSelButton.hoverEnabled = false;
-                    }
+                    mainWindow.toggleToolbar(objectName);
+                    nodeShapeToolbar.show = !nodeShapeToolbar.show;
                 }
-            }
+            } // end of node shape selection button
 
+            // Node color selection button - opens up node color toolbar
+            CustomButton {
+                id: nodeColorSelButton
+                objectName: "nodeColorSelButton"
+                height: 40
+                width: parent.width
+                nohovercolor: mainWindow.menuIdleButtonColor
+                hovercolor: mainWindow.menuHoveredButtonColor
+                textvalue: "Color"
+                iconcolor: "#9dd2e7"
+                onClicked: {
+                    hoverEnabled = !hoverEnabled;
+                    mainWindow.toggleToolbar(objectName);
+                    nodeColorToolbar.show = !nodeColorToolbar.show;
+                }
+            } // end of node color selection button
+
+            // Node width control text input field
+            MenuInputField {
+                id: nodeWidthControl
+                width: parent.width
+                height: 40
+                maximumLength: 8
+                padding: 10
+                placeholder: qsTr("Width")
+                onChanged: mainWindow.node_width_changed(value)
+            } // end of node width control
+
+            // Node height control text input field
+            MenuInputField {
+                id: nodeHeightControl
+                width: parent.width
+                height: 40
+                maximumLength: 8
+                padding: 10
+                placeholder: qsTr("Height")
+                onChanged: mainWindow.node_height_changed(value)
+            } // end of node height control
+
+            // Simple label
             MenuLabel {
                 text: "Edge"
                 height: 40
                 width: parent.width
             }
 
-            CustomButton {
-                id: edgeColorSelButton
-                height: 40
-                width: parent.width
-                nohovercolor: "#E5E5E5"
-                hovercolor: "#D0D0D0"
-                textvalue: "Color"
-                iconcolor: "#9dd2e7"
-                onClicked: {
-                    hoverEnabled = !hoverEnabled;
-                    if(edgeColorToolbar.visible == true){
-                        edgeColorToolbar.visible = false;
-                        edgeColorSelButton.hoverEnabled = true;
-                    }
-                    else {
-                        mainWindow.clearToolbars();
-                        edgeColorToolbar.visible = true;
-                        edgeColorSelButton.hoverEnabled = false;
-                    }
-                }
-            }
-
+            // Edge type selection button - opens up edge type toolbar
             CustomButton {
                 id: edgeTypeSelButton
+                objectName: "edgeTypeSelButton"
                 height: 40
                 width: parent.width
-                nohovercolor: "#E5E5E5"
-                hovercolor: "#D0D0D0"
+                nohovercolor: mainWindow.menuIdleButtonColor
+                hovercolor: mainWindow.menuHoveredButtonColor
                 textvalue: "Type"
                 iconsource: "resources/line.png"
                 onClicked: {
                     hoverEnabled = !hoverEnabled;
-                    if(edgeTypeToolbar.visible == true){
-                        edgeTypeToolbar.visible = false;
-                        edgeTypeSelButton.hoverEnabled = true;
-                    }
-                    else {
-                        mainWindow.clearToolbars();
-                        edgeTypeToolbar.visible = true;
-                        edgeTypeSelButton.hoverEnabled = false;
-                    }
+                    mainWindow.toggleToolbar(objectName);
+                    edgeTypeToolbar.show = !edgeTypeToolbar.show;
                 }
-            }
+            } // end of edge type selection button
 
-            Rectangle {
-                id: trol
+            // Edge color selection button - opens up edge color toolbar
+            CustomButton {
+                id: edgeColorSelButton
+                objectName: "edgeColorSelButton"
+                height: 40
                 width: parent.width
-                height: parent.width
-                color: "#f8ffcc"
-
-                MouseArea {
-                    anchors.fill:  parent
-                    onClicked: mainWindow.clearToolbars()
+                nohovercolor: mainWindow.menuIdleButtonColor
+                hovercolor: mainWindow.menuHoveredButtonColor
+                textvalue: "Color"
+                iconcolor: "#9dd2e7"
+                onClicked: {
+                    hoverEnabled = !hoverEnabled;
+                    mainWindow.toggleToolbar(objectName);
+                    edgeColorToolbar.show = !edgeColorToolbar.show;
                 }
-            }
+            } // end of edge color selection button
+
+            // Edge thickness control text field
+            MenuInputField {
+                id: edgeThicknessControl
+                width: parent.width
+                height: 40
+                maximumLength: 8
+                padding: 10
+                placeholder: qsTr("Thickness")
+                onChanged: mainWindow.edge_thickness_changed(value)
+            } // end of edge thickness control
         } // end of toolbar menu
     } // end of layout
 } // end of main window

@@ -5,9 +5,41 @@ Item {
 
     signal clicked(color color)
     property alias backgroundColor: rect.color
+    property var animationDuration: 120
     property var buttonSize: 30
+    property var show: false
     width: 40
     height: 680
+
+    PropertyAnimation { 
+        id: showAnimation;
+        target: container;
+        property: "opacity";
+        to: 1;
+        duration: container.animationDuration
+    }
+
+    PropertyAnimation { 
+        id: closeAnimation;
+        target: container;
+        property: "opacity";
+        to: 0;
+        duration: container.animationDuration
+    }
+
+    onShowChanged: {
+        if(show == true)
+            showAnimation.running = true
+        else
+            closeAnimation.running = true
+    }
+
+    onOpacityChanged: {
+        if(opacity == 0)
+            visible = false
+        else
+            visible = true
+    }
 
     Rectangle {
         id: rect

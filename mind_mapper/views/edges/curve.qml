@@ -3,14 +3,14 @@ import "edgefunctions.js" as Func
 
 Item {
     
-    // Id of the shape
-    id: bezierEdge
+    id: container
 
     // Object ID
     property var objectId
+    property alias isActive: activityIndicator.visible
 
-    property alias workspaceWidth: bezierEdge.width
-    property alias workspaceHeight: bezierEdge.height
+    property alias workspaceWidth: container.width
+    property alias workspaceHeight: container.height
     property alias startX: canvas.startX
     property alias startY: canvas.startY
     property alias endX: canvas.endX
@@ -25,6 +25,9 @@ Item {
     // Signals
     signal edge_delete(var id)
     signal edge_position_changed(var id, var x, var y)
+    signal edge_focus(var id)
+
+    onColorChanged: canvas.requestPaint()
 
     // Content
     Rectangle {
@@ -96,6 +99,18 @@ Item {
         radius: 5
     }
 
+    Rectangle {
+        id: activityIndicator
+        width: 50
+        height: 50
+        color: "#d8d8d8"
+        opacity: 0.5
+        radius: 25
+        x: ctrlPoint.x - (width - ctrlPoint.width) / 2
+        y: ctrlPoint.y - (height - ctrlPoint.height) / 2
+        visible: false
+    }
+
     // MouseArea
     MouseArea {
         id: mouseArea
@@ -111,19 +126,24 @@ Item {
         drag.axis: Drag.XandYAxis
         drag.minimumX: 0
         drag.minimumY: 0
-        drag.maximumX: bezierEdge.workspaceWidth - ctrlPoint.width
-        drag.maximumY: bezierEdge.workspaceHeight - ctrlPoint.height
+        drag.maximumX: container.workspaceWidth - ctrlPoint.width
+        drag.maximumY: container.workspaceHeight - ctrlPoint.height
 
-        onDoubleClicked: bezierEdge.edge_delete(bezierEdge.objectId)
+        onClicked: container.edge_focus(container.objectId);
 
-        onPressed: dragged = false
+        onDoubleClicked: container.edge_delete(container.objectId)
+
+        onPressed: {
+            dragged = false
+            container.edge_focus(container.objectId);
+        } 
 
         onPositionChanged: dragged = true
 
         onReleased: {
             if(dragged) {
-                bezierEdge.edge_position_changed(
-                    bezierEdge.objectId,
+                container.edge_position_changed(
+                    container.objectId,
                     ctrlPoint.x,
                     ctrlPoint.y)
                 dragged = false

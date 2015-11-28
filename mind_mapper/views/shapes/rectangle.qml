@@ -3,7 +3,7 @@ import QtQuick 2.5
 Item {
     
     // Id of the shape
-    id: rectangleShape
+    id: container
 
     // Object ID
     property var objectId
@@ -37,7 +37,7 @@ Item {
         id: text
         width: parent.width
         height: parent.height
-        onTextChanged: rectangleShape.node_text_changed(rectangleShape.objectId, text.nodetext)
+        onTextChanged: container.node_text_changed(container.objectId, text.nodetext)
     }
 
     // MouseArea
@@ -52,40 +52,40 @@ Item {
         
         acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-        drag.target: rectangleShape
+        drag.target: container
         drag.axis: Drag.XandYAxis
         drag.minimumX: 0
         drag.minimumY: 0
-        drag.maximumX: rectangleShape.workspaceWidth - parent.width
-        drag.maximumY: rectangleShape.workspaceHeight - parent.height
+        drag.maximumX: container.workspaceWidth - parent.width
+        drag.maximumY: container.workspaceHeight - parent.height
 
         onClicked: {
             if(mouse.button == Qt.LeftButton){
                 text.inputting = true;
-                rectangleShape.node_focus(rectangleShape.objectId);
+                container.node_focus(container.objectId);
             }
             else if (mouse.button == Qt.RightButton)
-                rectangleShape.node_connect(rectangleShape.objectId);
+                container.node_connect(container.objectId);
         }
 
         onDoubleClicked: {
             if(mouse.button == Qt.LeftButton)
-                rectangleShape.node_delete(rectangleShape.objectId)
+                container.node_delete(container.objectId)
         }
 
         onPressed: {
             dragged = false
             ispress = true
-            rectangleShape.node_focus(rectangleShape.objectId);
+            container.node_focus(container.objectId);
         }
 
         onPositionChanged: {
             dragged = true
             if(ispress == true)
-                rectangleShape.node_position_changed(
-                    rectangleShape.objectId,
-                    rectangleShape.x + rectangleShape.width / 2,
-                    rectangleShape.y + rectangleShape.height / 2);
+                container.node_position_changed(
+                    container.objectId,
+                    container.x + container.width / 2,
+                    container.y + container.height / 2);
         }
 
         onReleased: {
