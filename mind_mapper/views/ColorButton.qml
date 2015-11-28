@@ -7,7 +7,7 @@ Item {
 
     signal clicked(color color)
 
-    anchors.horizontalCenter : parent.horizontalCenter
+    //anchors.horizontalCenter : parent.horizontalCenter
 
     Rectangle {
         id: rect

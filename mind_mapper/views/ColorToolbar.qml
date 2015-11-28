@@ -7,9 +7,37 @@ Item {
     property alias backgroundColor: rect.color
     property var animationDuration: 120
     property var buttonSize: 30
+    property var rows: 22
+    property var columns: 1
     property var show: false
-    width: 40
-    height: 680
+
+    height: parent.height
+    width: columns * (buttonSize + 1) + 10
+
+    property var toolbarHeight: rows * (buttonSize + 1) + 10
+
+    onHeightChanged: {
+        if(height < toolbarHeight){
+            var temp
+            columns += 1
+            temp = parseInt(22 / columns)
+            if((columns * temp) < 22)
+                rows = temp + 1
+            else
+                rows = temp
+        }
+        else if(columns > 1){
+            var newColums = columns - 1
+            var newRows = parseInt(22 / newColums)
+            if((newRows * newColums)<22)
+                newRows += 1
+            var newHeight = newRows * (buttonSize + 1) + 10
+            if(newHeight < height){
+                columns = newColums
+                rows = newRows
+            }
+        } 
+    }
 
     PropertyAnimation { 
         id: showAnimation;
@@ -43,14 +71,20 @@ Item {
 
     Rectangle {
         id: rect
-        anchors.fill: parent
+        height: parent.toolbarHeight
+        width: parent.width
+        anchors.centerIn: parent
         color: "#D0D0D0"
     }
 
-    Column {
-        id: col
-        anchors.centerIn: parent
-        spacing: 2
+    Grid {
+        id: grid
+        rows: container.rows
+        columns: container.columns
+        anchors.centerIn: rect
+        spacing: 1
+        horizontalItemAlignment: Grid.AlignHCenter
+        verticalItemAlignment: Grid.AlignVCenter
 
         ColorButton {
             color: "#9dd2e7"
@@ -82,13 +116,6 @@ Item {
 
         ColorButton {
             color: "#002849"
-            width: container.buttonSize
-            height: container.buttonSize
-            onClicked: container.clicked(color)
-        }
-
-        ColorButton {
-            color: "#192327"
             width: container.buttonSize
             height: container.buttonSize
             onClicked: container.clicked(color)
@@ -194,6 +221,20 @@ Item {
 
         ColorButton {
             color: "#e3d05d"
+            width: container.buttonSize
+            height: container.buttonSize
+            onClicked: container.clicked(color)
+        }
+
+        ColorButton {
+            color: "black"
+            width: container.buttonSize
+            height: container.buttonSize
+            onClicked: container.clicked(color)
+        }
+
+        ColorButton {
+            color: "white"
             width: container.buttonSize
             height: container.buttonSize
             onClicked: container.clicked(color)

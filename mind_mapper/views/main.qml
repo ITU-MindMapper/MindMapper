@@ -159,6 +159,7 @@ Item {
         id: nodeColorToolbar
         anchors.right: parent.right
         anchors.rightMargin: menu.width
+        anchors.verticalCenter: parent.verticalCenter
         animationDuration: 200
         opacity: 0
         z: 4
@@ -174,6 +175,7 @@ Item {
         id: edgeColorToolbar
         anchors.right: parent.right
         anchors.rightMargin: menu.width
+        anchors.verticalCenter: parent.verticalCenter
         animationDuration: 200
         opacity: 0
         z: 4
