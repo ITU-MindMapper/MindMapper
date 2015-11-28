@@ -25,6 +25,11 @@ Item {
     Text {
         id: text
         anchors.centerIn: parent
+        anchors.fill: parent
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        wrapMode: Text.WordWrap
+        elide: Text.ElideRight
     }
 
     // Text input field
@@ -34,6 +39,7 @@ Item {
         anchors.fill: parent
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
+        wrapMode: Text.WordWrap
         color: text.color
         font.family: text.font.family
         font.pointSize: text.font.pointSize
