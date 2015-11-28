@@ -15,12 +15,13 @@ class Controller(object):
     def __init__(self, view_manager):
         self.view_manager = view_manager
         self.node_shape = 0
-        self.node_width = 100
-        self.node_height = 50
+        self.node_width = 0
+        self.node_height = 0
         self.node_background = "#9dd2e7"
         self.active_node = None
+        self.active_edge = None
         self.edge_color = "#9dd2e7"
-        self.edge_thickness = 10
+        self.edge_thickness = 0
         self.edge_spiked = 0
         self.edge_arrow = 0
         self.edge_type = 0
@@ -68,9 +69,15 @@ class Controller(object):
             out.write(str(self.project))
 
     def create_node(self, x, y):
+        height = self.node_height
+        if height == 0:
+            height = 100
+        width = self.node_width
+        if width == 0:
+            width = 100
         node = Node(x=int(x), y=int(y), background=self.node_background,
-                    shape=self.node_shape, width=self.node_width,
-                    height=self.node_height, id=self.NODE_IDS, text=Text(),
+                    shape=self.node_shape, width=width,
+                    height=height, id=self.NODE_IDS, text=Text(),
                     annotation=Annotation())
         self.project.append(node)
         self.nodeViews[self.NODE_IDS] = self.view_manager.create_node(node)
@@ -80,9 +87,12 @@ class Controller(object):
 
     def create_edge(self, node1, node2):
         print(node1.id, node2.id)
+        thickness = self.edge_thickness
+        if thickness == 0:
+            thickness = 10
         edge = Edge(x=int((node1.x + node2.x) / 2),
                     y=int((node1.y + node2.y) / 2),
-                    thickness=self.edge_thickness, type=self.edge_type,
+                    thickness=thickness, type=self.edge_type,
                     spiked=self.edge_spiked, arrow=self.edge_arrow,
                     node1=node1.id, node2=node2.id, id=self.EDGE_IDS,
                     color=self.edge_color)
@@ -90,6 +100,7 @@ class Controller(object):
         self.edgeViews[self.EDGE_IDS] = self.view_manager.create_edge(
             edge, node1, node2)
         self.EDGE_IDS += 1
+        self.edge_focus(edge.id)
 
     def node_text_changed(self, id, text):
         logging.debug('Text of node ' + str(id) + ' changed to: ' + text)
@@ -161,6 +172,9 @@ class Controller(object):
         self.edgeViews[int(id)].deleteLater()
         del self.edgeViews[int(id)]
         del self.project.edges[int(id)]
+        self.active_edge = None
+        self.view_manager._main.rootObject().setProperty(
+            "hasActiveEdge", False)
 
     def edge_position_changed(self, id, x, y):
         self.project.edges[int(id)].x = int(x)
@@ -199,6 +213,7 @@ class Controller(object):
         self.view_manager._main.rootObject().setProperty(
             "hasActiveNode", False)
         self.active_node = None
+        self.edge_transfer_active_to(None)
 
     def node_color_sel(self, color):
         self.node_background = color.name()
@@ -209,6 +224,10 @@ class Controller(object):
 
     def edge_color_sel(self, color):
         self.edge_color = color.name()
+        if self.active_edge is not None:
+            self.edgeViews[self.active_edge.id].rootObject().setProperty(
+                "color", str(color.name()))
+            self.active_edge.color = str(color.name())
 
     def edge_type_sel(self, type, spiked, arrow):
         self.edge_type = int(type)
@@ -228,7 +247,6 @@ class Controller(object):
 
     def node_focus(self, id):
         self.active_node = self.project.nodes[int(id)]
-
         self.view_manager._main.rootObject().setProperty(
             "hasActiveNode", False)
         self.view_manager._main.rootObject().setProperty(
@@ -238,7 +256,7 @@ class Controller(object):
         self.view_manager._main.rootObject().setProperty(
             "activeNodeWidth", self.active_node.width)
         self.view_manager._main.rootObject().setProperty(
-            "activeNodeHeigth", self.active_node.height)
+            "activeNodeHeight", self.active_node.height)
         self.view_manager._main.rootObject().setProperty(
             "activeNodeX", self.active_node.x)
         self.view_manager._main.rootObject().setProperty(
@@ -251,3 +269,66 @@ class Controller(object):
             "activeNodeTextColor", str(self.active_node.text.color))
         self.view_manager._main.rootObject().setProperty(
             "hasActiveNode", True)
+
+    def edge_focus(self, id):
+        self.edge_transfer_active_to(int(id))
+        self.view_manager._main.rootObject().setProperty(
+            "hasActiveEdge", False)
+        self.view_manager._main.rootObject().setProperty(
+            "activeEdgeColor", str(self.active_edge.color))
+        self.view_manager._main.rootObject().setProperty(
+            "activeEdgeThickness", self.active_edge.thickness)
+        self.view_manager._main.rootObject().setProperty(
+            "activeEdgeType", self.active_edge.type)
+        self.view_manager._main.rootObject().setProperty(
+            "activeEdgeSpiked", self.active_edge.spiked)
+        self.view_manager._main.rootObject().setProperty(
+            "activeEdgeArrow", self.active_edge.arrow)
+        self.view_manager._main.rootObject().setProperty(
+            "hasActiveEdge", True)
+
+    def node_width_changed(self, width):
+        self.node_width = int(width)
+        if self.active_node is not None:
+            real_x = int(self.active_node.x - int(width)/2)
+            self.active_node.width = int(width)
+            self.nodeViews[self.active_node.id].rootObject().setProperty(
+                "width", int(width))
+            self.nodeViews[self.active_node.id].rootObject().setX(real_x)
+            self.view_manager._main.rootObject().setProperty(
+                "activeNodeWidth", int(width))
+            self.view_manager._main.rootObject().setProperty(
+                "activeNodeX", int(self.active_node.x))
+
+    def node_height_changed(self, height):
+        self.node_height = int(height)
+        if self.active_node is not None:
+            real_y = int(self.active_node.y - int(height)/2)
+            self.active_node.height = int(height)
+            self.nodeViews[self.active_node.id].rootObject().setProperty(
+                "height", int(height))
+            self.nodeViews[self.active_node.id].rootObject().setY(real_y)
+            self.view_manager._main.rootObject().setProperty(
+                "activeNodeHeight", int(height))
+            self.view_manager._main.rootObject().setProperty(
+                "activeNodeY", int(self.active_node.y))
+
+    def edge_thickness_changed(self, thickness):
+        self.edge_thickness = thickness
+        if self.active_edge is not None:
+            self.active_edge.thickness = int(thickness)
+            self.edgeViews[self.active_edge.id].rootObject().setProperty(
+                "thickness", int(thickness))
+            self.view_manager._main.rootObject().setProperty(
+                "activeEdgeThickness", int(thickness))
+
+    def edge_transfer_active_to(self, id):
+        if self.active_edge is not None:
+            self.edgeViews[self.active_edge.id].rootObject().setProperty(
+                "isActive", False)
+        if id is not None:
+            self.active_edge = self.project.edges[int(id)]
+            self.edgeViews[self.active_edge.id].rootObject().setProperty(
+                "isActive", True)
+        else:
+            self.active_edge = None
