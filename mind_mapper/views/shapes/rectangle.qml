@@ -11,7 +11,7 @@ Item {
     property var workspaceHeight
 
     // Background color
-    property alias backgroundColor: content.color
+    property alias background: content.color
     
     // Text
     property alias text:      text.nodetext

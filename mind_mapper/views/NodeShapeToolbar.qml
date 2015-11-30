@@ -9,7 +9,7 @@ Item {
     property var buttonSize: 50
     property var show: false
     width: 58
-    height: (50 + 2)*2 + 7 
+    height: (50 + 2)*3 + 7 
 
     PropertyAnimation { 
         id: showAnimation;
@@ -63,6 +63,14 @@ Item {
         ImageButton {
             number: 1
             image: "resources/circle.png"
+            width: container.buttonSize
+            height: container.buttonSize
+            onClicked: container.clicked(number)
+        }
+
+        ImageButton {
+            number: 2
+            image: "resources/image.png"
             width: container.buttonSize
             height: container.buttonSize
             onClicked: container.clicked(number)

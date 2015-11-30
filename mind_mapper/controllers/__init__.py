@@ -3,8 +3,10 @@ from mind_mapper.models.edge import Edge
 from mind_mapper.models.annotation import Annotation
 from mind_mapper.models.text import Text
 import logging
+import os
 from mind_mapper.models.project import Project
 from xml.etree.ElementTree import fromstring
+from PyQt5.QtCore import QFile
 
 
 class Controller(object):
@@ -18,6 +20,9 @@ class Controller(object):
         self.node_width = 0
         self.node_height = 0
         self.node_background = "#9dd2e7"
+        self.node_text_color = "black"
+        self.node_text_font = "Sans Serif"
+        self.node_text_size = 14
         self.active_node = None
         self.active_edge = None
         self.edge_color = "#9dd2e7"
@@ -26,45 +31,63 @@ class Controller(object):
         self.edge_arrow = 0
         self.edge_type = 0
         self.connectNode = None
+        self.workspace_width = 800
+        self.workspace_height = 600
         self.project = Project()
         self.nodeViews = {}
         self.edgeViews = {}
 
-    def load(self, what="temp.xml"):
-        # Firstly we have to delete what is in memory
-        node_keys = list(self.project.nodes.keys())
-        for id in node_keys:
-            self.node_delete(id)
-        edge_keys = list(self.project.edges.keys())
-        for id in edge_keys:
-            self.edge_delete(id)
-        self.NODE_IDS = 0
-        self.EDGE_IDS = 0
-        # open file and load project
-        with open(what, "r") as xml:
-            self.project.deserialize(fromstring(xml.read()))
-        # create views
-        for id in self.project.nodes:
-            self.nodeViews[id] = self.view_manager.create_node(
-                self.project.nodes[id])
+    def load(self, what):
+        try:
+            # open file and load project
+            if what != "":
+                xml = QFile(what.toLocalFile())
+            else:
+                xml = QFile("temp")
+            if xml.open(QFile.ReadOnly):
+                self.project.deserialize(fromstring(xml.readAll()))
+            if(what == ""):
+                os.remove("./temp")
+            # create views
+            for id in self.project.nodes:
+                self.nodeViews[id] = self.view_manager.create_node(
+                    self.project.nodes[id])
+                # node_ids should be biggest of loaded ids
+                if self.NODE_IDS <= id:
+                    self.NODE_IDS = id + 1
+            # create edges
+            for id in self.project.edges:
+                self.edgeViews[id] = self.view_manager.create_edge(
+                    self.project.edges[id],
+                    self.project.nodes[self.project.edges[id].node1],
+                    self.project.nodes[self.project.edges[id].node2])
+                # egde_ids should be biggest of loaded ids
+                if self.EDGE_IDS <= id:
+                    self.EDGE_IDS = id + 1
             print("Loaded nodes: " + str(self.project.nodes))
             print("Loaded NodeViews: " + str(self.nodeViews))
-            # node_ids should be biggest of loaded ids
-            if self.NODE_IDS <= id:
-                self.NODE_IDS = id + 1
-        # create edges
-        for id in self.project.edges:
-            self.edgeViews[id] = self.view_manager.create_edge(
-                self.project.edges[id],
-                self.project.nodes[self.project.edges[id].node1],
-                self.project.nodes[self.project.edges[id].node2])
             print("Loaded edges: " + str(self.project.edges))
             print("Loaded EdgeViews: " + str(self.edgeViews))
-            # egde_ids should be biggest of loaded ids
-            if self.EDGE_IDS <= id:
-                self.EDGE_IDS = id + 1
+        except:
+            print("Nepodarilo sa nacitat subor")
 
-    def save(self, where="temp.xml"):
+    def exporting(self):
+        try:
+            os.mkdir("export")
+        except:
+            pass
+
+    def save(self, where):
+        try:
+            os.mkdir("save")
+        except:
+            pass
+        where = "save/" + where
+        if where != "":
+            if where[-4:] != ".xml":
+                where += ".xml"
+        else:
+            where = "temp"
         with open(where, "w") as out:
             out.write(str(self.project))
 
@@ -77,8 +100,12 @@ class Controller(object):
             width = 100
         node = Node(x=int(x), y=int(y), background=self.node_background,
                     shape=self.node_shape, width=width,
-                    height=height, id=self.NODE_IDS, text=Text(),
+                    height=height, id=self.NODE_IDS, text=Text(
+                        font=self.node_text_font, size=self.node_text_size,
+                        color=self.node_text_color, text=""),
                     annotation=Annotation())
+        if self.node_shape == 2:
+            node.background = ""
         self.project.append(node)
         self.nodeViews[self.NODE_IDS] = self.view_manager.create_node(node)
         self.NODE_IDS += 1
@@ -150,6 +177,13 @@ class Controller(object):
                 view.rootObject().setProperty("endX", str(x))
                 view.rootObject().setProperty("endY", str(y))
 
+    def clear_workspace(self):
+        node_keys = list(self.project.nodes.keys())
+        for id in node_keys:
+            self.node_delete(int(id))
+        self.NODE_IDS = 0
+        self.EDGE_IDS = 0
+
     def node_delete(self, id):
         logging.debug('Delete of node ' + str(id) + ' issued')
         self.nodeViews[int(id)].deleteLater()
@@ -217,10 +251,19 @@ class Controller(object):
 
     def node_color_sel(self, color):
         self.node_background = color.name()
+        if (self.active_node is not None)and(self.active_node.shape != 2):
+            self.nodeViews[self.active_node.id].rootObject().setProperty(
+                "background", str(color.name()))
+            self.active_node.background = str(color.name())
+
+    def node_text_color_sel(self, color):
+        self.node_text_color = color.name()
         if self.active_node is not None:
             self.nodeViews[self.active_node.id].rootObject().setProperty(
-                "backgroundColor", str(color.name()))
-            self.active_node.background = str(color.name())
+                "textColor", str(color.name()))
+            self.active_node.text.color = str(color.name())
+            self.view_manager._main.rootObject().setProperty(
+                "activeNodeTextColor", str(color.name()))
 
     def edge_color_sel(self, color):
         self.edge_color = color.name()
@@ -238,6 +281,10 @@ class Controller(object):
         self.node_shape = int(shape)
 
     def window_resize(self, width, height):
+        self.workspace_height = int(height)
+        self.workspace_width = int(width)
+        logging.debug('New window size: [' +
+                      str(width) + ',' + str(height) + ']')
         for key, view in self.edgeViews.items():
             view.rootObject().setProperty("workspaceWidth", str(width))
             view.rootObject().setProperty("workspaceHeight", str(height))
@@ -249,8 +296,9 @@ class Controller(object):
         self.active_node = self.project.nodes[int(id)]
         self.view_manager._main.rootObject().setProperty(
             "hasActiveNode", False)
-        self.view_manager._main.rootObject().setProperty(
-            "activeNodeColor", str(self.active_node.background))
+        if self.active_node.shape != 2:
+            self.view_manager._main.rootObject().setProperty(
+                "activeNodeColor", str(self.active_node.background))
         self.view_manager._main.rootObject().setProperty(
             "activeNodeShape", self.active_node.shape)
         self.view_manager._main.rootObject().setProperty(
@@ -313,6 +361,19 @@ class Controller(object):
             self.view_manager._main.rootObject().setProperty(
                 "activeNodeY", int(self.active_node.y))
 
+    def node_text_size_changed(self, size):
+        self.node_text_size = int(size)
+        if self.active_node is not None:
+            self.active_node.text.size = int(size)
+            self.nodeViews[self.active_node.id].rootObject().setProperty(
+                "textSize", int(size))
+            self.view_manager._main.rootObject().setProperty(
+                "activeNodeTextSize", int(size))
+
+    def node_image_loaded(self, source):
+        if self.active_node is not None:
+            self.active_node.background = source.toString()
+
     def edge_thickness_changed(self, thickness):
         self.edge_thickness = thickness
         if self.active_edge is not None:
@@ -332,3 +393,11 @@ class Controller(object):
                 "isActive", True)
         else:
             self.active_edge = None
+
+    def hide_edge_controls(self):
+        for key, view in self.edgeViews.items():
+            view.rootObject().setProperty("showCtrlPoint", False)
+
+    def show_edge_controls(self):
+        for key, view in self.edgeViews.items():
+            view.rootObject().setProperty("showCtrlPoint", True)

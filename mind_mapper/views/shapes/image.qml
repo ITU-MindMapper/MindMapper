@@ -1,4 +1,5 @@
 import QtQuick 2.5
+import QtQuick.Dialogs 1.2
 
 Item {
     
@@ -7,47 +8,62 @@ Item {
 
     // Object ID
     property var objectId
-    property var workspaceWidth: 0
-    property var workspaceHeight: 0
+    property var workspaceWidth
+    property var workspaceHeight
 
     // Background color
-    property alias background: canvas.backgroundColor
-    
+    property var background
+
     // Text
     property alias text:      text.nodetext
     property alias textFont:  text.textfont
     property alias textSize:  text.textsize
     property alias textColor: text.textcolor
 
-    
-    // Signals
     signal node_delete(var id)
     signal node_position_changed(var id, var x, var y)
     signal node_text_changed(var id, var new_text)
     signal node_connect(var id)
     signal node_focus(var id)
+    signal node_image_loaded(var source)
 
-    onBackgroundChanged: canvas.requestPaint()
+    onBackgroundChanged: {
+        if(container.background == "")
+            fileDialog.open();
+        else
+            image.source = container.background;
+    }
 
-    // Content
-    Rectangle {
-        id: content
-        border.color: "transparent"
-        color: "transparent"
-        anchors.fill: parent
-        
-        Canvas {
-            id: canvas
-            property color backgroundColor
-            anchors.fill: parent
+    FileDialog {
+        id: fileDialog
+        title: "Choose a file"
+        folder: shortcuts.pictures
+        selectMultiple: false
+        nameFilters: [ "Image files (*.jpg *.png *.bmp *.jpeg)"]
+        onAccepted: {
+            image.source = fileDialog.fileUrl;
+            container.node_image_loaded(image.source);
+            fileDialog.close();
+        }
+        onRejected: {
+            image.source = "../resources/noimage.png";
+            container.node_image_loaded(image.source);
+            fileDialog.close();
+        }
+    }
 
-            onPaint: {
-                var ctx = getContext("2d");
-                ctx.reset();
-                ctx.beginPath();
-                ctx.fillStyle = backgroundColor;
-                ctx.ellipse(parent.x, parent.y, parent.width, parent.height);
-                ctx.fill();
+    Image {
+        id: image
+        sourceSize.width: container.width
+        sourceSize.height: container.height
+        property int errorCount: 0
+        property string altSource: "../resources/noimage.png"
+        onStatusChanged: {
+            if (image.status == Image.Error) {
+                errorCount += 1;
+                if (errorCount == 1)
+                    image.source = "";
+                image.source = image.altSource;
             }
         }
     }

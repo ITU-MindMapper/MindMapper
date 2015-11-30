@@ -3,12 +3,14 @@ import "edgefunctions.js" as Func
 
 Item {
     
-    // Id of the shape
+    // Id of the type
     id: container
 
     // Object ID
     property var objectId
-    property alias isActive: activityIndicator.visible
+
+    property alias showCtrlPoint: ctrlPoint.visible
+    property var isActive: false
 
     property alias workspaceWidth: container.width
     property alias workspaceHeight: container.height
@@ -110,7 +112,7 @@ Item {
         radius: 25
         x: ctrlPoint.x - (width - ctrlPoint.width) / 2
         y: ctrlPoint.y - (height - ctrlPoint.height) / 2
-        visible: false
+        visible: container.isActive && ctrlPoint.visible
     }
 
     // MouseArea
