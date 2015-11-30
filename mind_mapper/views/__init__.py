@@ -8,7 +8,7 @@ import os
 
 class View(object):
 
-    shapes = ["rectangle", "ellipse"]
+    shapes = ["rectangle", "ellipse", "image"]
     edgetypes = ["line", "curve"]
 
     def __init__(self):
@@ -40,12 +40,25 @@ class View(object):
             self._controller.edge_type_sel)
         self._main.rootObject().node_shape_sel.connect(
             self._controller.node_shape_sel)
+        self._main.rootObject().clear_workspace.connect(
+            self._controller.clear_workspace)
         self._main.rootObject().node_width_changed.connect(
             self._controller.node_width_changed)
         self._main.rootObject().node_height_changed.connect(
             self._controller.node_height_changed)
+        self._main.rootObject().node_text_color_sel.connect(
+            self._controller.node_text_color_sel)
+        self._main.rootObject().node_text_size_changed.connect(
+            self._controller.node_text_size_changed)
         self._main.rootObject().edge_thickness_changed.connect(
             self._controller.edge_thickness_changed)
+        self._main.rootObject().show_edge_controls.connect(
+            self._controller.show_edge_controls)
+        self._main.rootObject().hide_edge_controls.connect(
+            self._controller.hide_edge_controls)
+        self._main.rootObject().exporting.connect(
+            self._controller.exporting)
+
         self._main.setProperty("width", 1000)
         self._main.setProperty("height", 800)
         self._main.show()
@@ -64,11 +77,14 @@ class View(object):
         # Sets all properties
         qml_node.rootObject().setProperty("parent", workspace)
         qml_node.rootObject().setProperty("objectId", str(node.id))
-        qml_node.rootObject().setProperty("backgroundColor",
+        qml_node.rootObject().setProperty("background",
                                           str(node.background))
         qml_node.rootObject().setProperty("width", str(node.width))
         qml_node.rootObject().setProperty("height", str(node.height))
         qml_node.rootObject().setProperty("text", str(node.text.text))
+        qml_node.rootObject().setProperty("textFont", str(node.text.font))
+        qml_node.rootObject().setProperty("textSize", str(node.text.size))
+        qml_node.rootObject().setProperty("textColor", str(node.text.color))
 
         # Sets drag boundaries
         qml_node.rootObject().setProperty("workspaceWidth",
@@ -87,6 +103,9 @@ class View(object):
             self._controller.node_connect)
         qml_node.rootObject().node_focus.connect(
             self._controller.node_focus)
+        if node.shape == 2:
+            qml_node.rootObject().node_image_loaded.connect(
+                self._controller.node_image_loaded)
 
         # Position to mouse click
         qml_node.rootObject().setX(node.x - node.width / 2)

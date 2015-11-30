@@ -11,7 +11,7 @@ Item {
 
     onVisibleChanged: {
         if(visible == true){
-            if(shape == 0){
+            if(shape != 1){
                 rectangleShape.visible = true
                 ellipseShape.visible = false
             }

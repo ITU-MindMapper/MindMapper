@@ -8,17 +8,17 @@ Item {
     property var text
     property alias color: rect.color
 
-    width: 100
-    height: 50
-
     anchors.top: parent.top
     anchors.topMargin: 20
     anchors.horizontalCenter: parent.horizontalCenter
 
+    width: text.paintedWidth + 40
+    height: text.paintedHeight + 20
+
     visible: false
     z: 5
 
-    function restart() {zoomTimer.restart()}
+    function restart() {timer.restart()}
 
     onShowChanged: {
         if(show == true)
@@ -58,13 +58,14 @@ Item {
         }
 
         Timer {
-            id: zoomTimer
+            id: timer
             interval: container.duration
             running: false
             onTriggered: container.show = false
         }
 
         Text {
+            id: text
             anchors.centerIn: parent
             text: container.text
         }

@@ -19,6 +19,8 @@ Item {
             inputField.text = text.text
             text.text = ""
         }
+        else 
+            container.textChanged(text.text)
     }
 
     // Text content
@@ -49,7 +51,7 @@ Item {
         onEditingFinished: {
             text.text = inputField.text
             inputField.visible = false
-            container.textChanged(text.text)
+            inputField.focus = false
             container.inputting = false
         }
     }
