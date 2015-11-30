@@ -31,6 +31,8 @@ class Controller(object):
         self.edge_arrow = 0
         self.edge_type = 0
         self.connectNode = None
+        self.workspace_width = 800
+        self.workspace_height = 600
         self.project = Project()
         self.nodeViews = {}
         self.edgeViews = {}
@@ -279,6 +281,10 @@ class Controller(object):
         self.node_shape = int(shape)
 
     def window_resize(self, width, height):
+        self.workspace_height = int(height)
+        self.workspace_width = int(width)
+        logging.debug('New window size: [' +
+                      str(width) + ',' + str(height) + ']')
         for key, view in self.edgeViews.items():
             view.rootObject().setProperty("workspaceWidth", str(width))
             view.rootObject().setProperty("workspaceHeight", str(height))

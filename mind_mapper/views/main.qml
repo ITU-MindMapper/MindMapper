@@ -31,7 +31,7 @@ Item {
     signal load(var file)
     signal exporting()
     signal clear_workspace()
-    signal window_resize(var width, var height)
+    signal workspace_size_changed(var width, var height)
     signal mouse_position(var x, var y)
     signal show_edge_controls()
     signal hide_edge_controls()
@@ -206,6 +206,28 @@ Item {
         }
     }
 
+    ExpandButton {
+        anchors.right: parent.right
+        anchors.rightMargin: menu.width + 20
+        anchors.verticalCenter: parent.verticalCenter
+        rotation: 0
+        onClicked: {
+            workspace.width += 100;
+            mainWindow.workspace_size_changed(workspace.width, workspace.height)
+        }
+    }
+
+    ExpandButton {
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 20
+        anchors.horizontalCenter: parent.horizontalCenter
+        rotation: 90
+        onClicked: {
+            workspace.height += 100;
+            mainWindow.workspace_size_changed(workspace.width, workspace.height)
+        }
+    }
+
     /**
      * Toolbars
      */
@@ -328,150 +350,182 @@ Item {
         columns: 2
         anchors.fill: parent
 
-        Rectangle {
-            id: workspace
-            objectName: "workspace"
+        ScrollView {
+            id: scrollview
             width: parent.width - menu.width
             height: parent.height
-            color: "white"
-            transform: Scale {id: zoomScale}
+            contentItem: workspace
+            style: ScrollViewStyle {
+                    handle: Item {
+                        property var scale: zoomScale.xScale
+                        implicitWidth: 14
+                        implicitHeight: 14                    
+                        Rectangle {
+                            color: "#424246"
+                            anchors.fill: parent
+                        }
+                    }
+                    scrollBarBackground: Item {
+                        implicitWidth: 14
+                        implicitHeight: 14
+                        visible: styleData.hovered
+                    }
+                    incrementControl: Rectangle {}
+                    decrementControl: Rectangle {}
+                    corner: Rectangle {}
+                }
+
+            Rectangle {
+                width: workspace.width * zoomScale.xScale
+                height: workspace.height * zoomScale.yScale
+                color: "transparent"
+
+                Rectangle {
+                    id: workspace
+                    objectName: "workspace"
+                    anchors.centerIn: parent
+                    width: 800
+                    height: 600
+                    color: "white"
+                    transform: Scale {id: zoomScale}
 
 
-            onWidthChanged: {
-                gridcanvas.requestPaint();
-                mainWindow.window_resize(width, height);
+                    onWidthChanged: {
+                        gridcanvas.requestPaint();
+                        mainWindow.workspace_size_changed(width, height);
+                    }
+
+                    onHeightChanged: {
+                        gridcanvas.requestPaint();
+                        mainWindow.workspace_size_changed(width, height);
+                    }
+
+                    // Background grid for better work
+                    Canvas {
+                        id: gridcanvas
+                        anchors.fill: parent
+                        visible: mainWindow.showGrid
+                        property alias size: mainWindow.gridPitch
+                        property var vertical_count: parent.width/size - 1
+                        property var horizontal_count: parent.height/size - 1
+                        property var posX: 0
+                        property var posY: 0
+                        onPaint: {
+                            posX = 0
+                            posY = 0
+                            var ctx = getContext("2d");
+                            ctx.reset();
+                            ctx.strokeStyle = Qt.rgba(0.8, 0.8, 0.8, 1);
+                            ctx.lineWidth = 1;
+                            ctx.beginPath();
+                            var i;
+                            for (i = 0; i < vertical_count; i++) {
+                                posX = posX + size;
+                                ctx.moveTo(posX, 0);
+                                ctx.lineTo(posX, parent.height);
+                            }
+                            for (i = 0; i < horizontal_count; i++) { 
+                                posY = posY + size
+                                ctx.moveTo(0, posY);
+                                ctx.lineTo(parent.width, posY);
+                            }
+                            ctx.stroke();
+                        }
+                    } // end of background grid
+
+                    // Connection pointer indicator
+                    Canvas {
+                        id: connectionPointer
+                        anchors.fill: parent
+                        antialiasing: true;
+
+                        property var cx
+                        property var cy
+                        property var endX
+                        property var endY
+
+                        onCxChanged:requestPaint();
+                        onCyChanged:requestPaint();
+                        onEndXChanged:requestPaint();
+                        onEndYChanged:requestPaint();
+
+                        onPaint: {
+                           var ctx = getContext("2d");
+                           if(mainWindow.connecting == true){
+                                ctx.reset();
+                                ctx.strokeStyle = Qt.rgba(0.7, 0.7, 0.7, 1);
+                                ctx.lineWidth = 3
+                                ctx.clearRect(0,0,parent.width, parent.height)
+                                ctx.beginPath();1
+                                ctx.moveTo(cx, cy);
+                                ctx.lineTo(endX, endY);
+                                ctx.stroke();
+                            }
+                            else{
+                                ctx.clearRect(0,0,parent.width,parent.height);
+                            }
+                        }
+                    } // end of connection pointer
+
+
+                    // Active node highlighter
+                    NodeHighlighter {
+                        id: nodeHighlighter
+                        shape: mainWindow.activeNodeShape
+                        width: mainWindow.activeNodeWidth + 30
+                        height: mainWindow.activeNodeHeight + 30
+                        color: "#d8d8d8"
+                        visible: mainWindow.hasActiveNode && mainWindow.showActiveNode
+                        x: mainWindow.activeNodeX - width/2
+                        y: mainWindow.activeNodeY - height/2
+                    } // end of active node highlighter
+
+                    // Workspace mouse area
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+
+                        acceptedButtons: Qt.Wheel | Qt.LeftButton | Qt.RightButton
+
+                        onWheel: {
+                            if((wheel.angleDelta.y < 0)&&(zoomScale.xScale <= 2.95)){
+                                zoomIndicator.show = true
+                                zoomIndicator.restart()
+                                zoomScale.xScale += 0.1
+                                zoomScale.yScale += 0.1
+                                zoomScale.origin.x = wheel.x
+                                zoomScale.origin.y = wheel.y
+                            }
+                            else if((wheel.angleDelta.y > 0)&&(zoomScale.yScale >= 0.35)){
+                                zoomIndicator.show = true
+                                zoomIndicator.restart()
+                                zoomScale.xScale -= 0.1
+                                zoomScale.yScale -= 0.1
+                                zoomScale.origin.x = wheel.x
+                                zoomScale.origin.y = wheel.y
+                            }
+                        }
+
+                        onDoubleClicked: {
+                            if(mouse.button == Qt.LeftButton)
+                                mainWindow.create_node(mouse.x, mouse.y)
+                        }
+
+                        onClicked: {
+                            if(mouse.button == Qt.LeftButton){
+                                mainWindow.lose_focus()
+                                mainWindow.toggleToolbar()
+                            }
+                        }
+
+                        onPositionChanged: {
+                            if(mainWindow.connecting == true)
+                                mainWindow.mouse_position(mouse.x, mouse.y)
+                        }
+                    } // end of workspace mouse area
+                } // end of workspace
             }
-
-            onHeightChanged: {
-                gridcanvas.requestPaint();
-                mainWindow.window_resize(width, height);
-            }
-
-            // Background grid for better work
-            Canvas {
-                id: gridcanvas
-                anchors.fill: parent
-                visible: mainWindow.showGrid
-                property alias size: mainWindow.gridPitch
-                property var vertical_count: parent.width/size - 1
-                property var horizontal_count: parent.height/size - 1
-                property var posX: 0
-                property var posY: 0
-                onPaint: {
-                    posX = 0
-                    posY = 0
-                    var ctx = getContext("2d");
-                    ctx.reset();
-                    ctx.strokeStyle = Qt.rgba(0.8, 0.8, 0.8, 1);
-                    ctx.lineWidth = 1;
-                    ctx.beginPath();
-                    var i;
-                    for (i = 0; i < vertical_count; i++) {
-                        posX = posX + size;
-                        ctx.moveTo(posX, 0);
-                        ctx.lineTo(posX, parent.height);
-                    }
-                    for (i = 0; i < horizontal_count; i++) { 
-                        posY = posY + size
-                        ctx.moveTo(0, posY);
-                        ctx.lineTo(parent.width, posY);
-                    }
-                    ctx.stroke();
-                }
-            } // end of background grid
-
-            // Connection pointer indicator
-            Canvas {
-                id: connectionPointer
-                anchors.fill: parent
-                antialiasing: true;
-
-                property var cx
-                property var cy
-                property var endX
-                property var endY
-
-                onCxChanged:requestPaint();
-                onCyChanged:requestPaint();
-                onEndXChanged:requestPaint();
-                onEndYChanged:requestPaint();
-
-                onPaint: {
-                   var ctx = getContext("2d");
-                   if(mainWindow.connecting == true){
-                        ctx.reset();
-                        ctx.strokeStyle = Qt.rgba(0.7, 0.7, 0.7, 1);
-                        ctx.lineWidth = 3
-                        ctx.clearRect(0,0,parent.width, parent.height)
-                        ctx.beginPath();1
-                        ctx.moveTo(cx, cy);
-                        ctx.lineTo(endX, endY);
-                        ctx.stroke();
-                    }
-                    else{
-                        ctx.clearRect(0,0,parent.width,parent.height);
-                    }
-                }
-            } // end of connection pointer
-
-
-            // Active node highlighter
-            NodeHighlighter {
-                id: nodeHighlighter
-                shape: mainWindow.activeNodeShape
-                width: mainWindow.activeNodeWidth + 30
-                height: mainWindow.activeNodeHeight + 30
-                color: "#d8d8d8"
-                visible: mainWindow.hasActiveNode && mainWindow.showActiveNode
-                x: mainWindow.activeNodeX - width/2
-                y: mainWindow.activeNodeY - height/2
-            } // end of active node highlighter
-
-            // Workspace mouse area
-            MouseArea {
-                anchors.fill: parent
-                hoverEnabled: true
-
-                acceptedButtons: Qt.Wheel | Qt.LeftButton | Qt.RightButton
-
-                onWheel: {
-                    if((wheel.angleDelta.y < 0)&&(zoomScale.xScale <= 2.95)){
-                        zoomIndicator.show = true
-                        zoomIndicator.restart()
-                        zoomScale.xScale += 0.1
-                        zoomScale.yScale += 0.1
-                        zoomScale.origin.x = wheel.x
-                        zoomScale.origin.y = wheel.y
-                    }
-                    else if((wheel.angleDelta.y > 0)&&(zoomScale.yScale >= 0.35)){
-                        zoomIndicator.show = true
-                        zoomIndicator.restart()
-                        zoomScale.xScale -= 0.1
-                        zoomScale.yScale -= 0.1
-                        zoomScale.origin.x = wheel.x
-                        zoomScale.origin.y = wheel.y
-                    }
-                }
-
-                onDoubleClicked: {
-                    if(mouse.button == Qt.LeftButton)
-                        mainWindow.create_node(mouse.x, mouse.y)
-                }
-
-                onClicked: {
-                    if(mouse.button == Qt.LeftButton){
-                        mainWindow.lose_focus()
-                        mainWindow.toggleToolbar()
-                    }
-                }
-
-                onPositionChanged: {
-                    if(mainWindow.connecting == true)
-                        mainWindow.mouse_position(mouse.x, mouse.y)
-                }
-            } // end of workspace mouse area
-        } // end of workspace
-
+        } // end of ScrollView
         /**
          * Following column contains right hand side
          * toolbars, buttons, controls etc
