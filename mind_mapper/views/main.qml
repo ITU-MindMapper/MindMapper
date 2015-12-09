@@ -31,7 +31,8 @@ Item {
     signal load(var file)
     signal exporting()
     signal clear_workspace()
-    signal workspace_size_changed(var width, var height)
+    signal workspace_width_changed(var height)
+    signal workspace_height_changed(var height)
     signal mouse_position(var x, var y)
     signal show_edge_controls()
     signal hide_edge_controls()
@@ -399,12 +400,12 @@ Item {
 
                     onWidthChanged: {
                         gridcanvas.requestPaint();
-                        mainWindow.workspace_size_changed(width, height);
+                        mainWindow.workspace_width_changed(width);
                     }
 
                     onHeightChanged: {
                         gridcanvas.requestPaint();
-                        mainWindow.workspace_size_changed(width, height);
+                        mainWindow.workspace_height_changed(height);
                     }
 
                     // Background grid for better work

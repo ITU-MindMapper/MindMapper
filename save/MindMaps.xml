@@ -1,0 +1,217 @@
+<project width='1500' height='1000'>
+<node x='742' shape='1' width='200' y='442' id='1' background='#e3d05d' height='150'>
+<text font='Sans Serif' size='35' color='#000000'>
+Mind Maps
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='1004' shape='0' width='100' y='238' id='2' background='#e93f1e' height='75'>
+<text font='Sans Serif' size='20' color='#ffffff'>
+Paper
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='1165' shape='0' width='80' y='83' id='4' background='#e93f1e' height='60'>
+<text font='Sans Serif' size='15' color='#ffffff'>
+Blank
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='1263' shape='0' width='120' y='163' id='5' background='#e93f1e' height='60'>
+<text font='Sans Serif' size='15' color='#ffffff'>
+Landscape
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='1300' shape='0' width='80' y='267' id='6' background='#e93f1e' height='60'>
+<text font='Sans Serif' size='15' color='#ffffff'>
+Start
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='582' shape='0' width='130' y='267' id='7' background='#380952' height='75'>
+<text font='Sans Serif' size='20' color='#ffffff'>
+Structure
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='453' shape='0' width='80' y='82' id='8' background='#785e94' height='60'>
+<text font='Sans Serif' size='15' color='#ffffff'>
+Clear
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='261' shape='0' width='150' y='140' id='9' background='#785e94' height='60'>
+<text font='Sans Serif' size='15' color='#ffffff'>
+Associations
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='187' shape='0' width='100' y='243' id='10' background='#785e94' height='60'>
+<text font='Sans Serif' size='15' color='#ffffff'>
+Radiant
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='184' shape='0' width='150' y='340' id='11' background='#785e94' height='60'>
+<text font='Sans Serif' size='15' color='#ffffff'>
+Hierarchical
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='451' shape='1' width='120' y='528' id='13' background='#008547' height='100'>
+<text font='Sans Serif' size='20' color='#ffffff'>
+Style
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='150' shape='1' width='75' y='488' id='14' background='#008547' height='60'>
+<text font='Sans Serif' size='15' color='#ffffff'>
+Fun
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='128' shape='1' width='120' y='585' id='15' background='#008547' height='75'>
+<text font='Sans Serif' size='15' color='#ffffff'>
+Emphasis
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='118' shape='1' width='120' y='683' id='16' background='#008547' height='75'>
+<text font='Sans Serif' size='15' color='#ffffff'>
+Personal
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='219' shape='1' width='100' y='747' id='17' background='#008547' height='75'>
+<text font='Sans Serif' size='15' color='#ffffff'>
+Beauty
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='719' shape='1' width='120' y='657' id='19' background='#f7c460' height='100'>
+<text font='Sans Serif' size='20' color='#58011c'>
+Lines
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='468' shape='1' width='100' y='827' id='20' background='#f7c460' height='75'>
+<text font='Sans Serif' size='15' color='#58011c'>
+Connect
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='587' shape='1' width='100' y='893' id='21' background='#f7c460' height='75'>
+<text font='Sans Serif' size='15' color='#58011c'>
+Thicker
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='732' shape='1' width='100' y='907' id='22' background='#f7c460' height='75'>
+<text font='Sans Serif' size='15' color='#58011c'>
+Length
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='917' shape='1' width='100' y='890' id='23' background='#f7c460' height='75'>
+<text font='Sans Serif' size='15' color='#58011c'>
+Organic
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='1005' shape='0' width='100' y='535' id='24' background='#015873' height='75'>
+<text font='Sans Serif' size='20' color='#ffffff'>
+Use
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='1326' shape='0' width='100' y='530' id='25' background='#009993' height='60'>
+<text font='Sans Serif' size='15' color='#ffffff'>
+Images
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='1278' shape='0' width='100' y='695' id='26' background='#9dd2e7' height='60'>
+<text font='Sans Serif' size='15' color='#380952'>
+Colour
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node x='1182' shape='0' width='100' y='776' id='27' background='#009993' height='60'>
+<text font='Sans Serif' size='15' color='#380952'>
+Words
+</text>
+<annotation>
+
+</annotation>
+</node>
+<edge node2='2' x='865' y='323' color='#ff0000' spiked='0' id='0' node1='1' thickness='30' arrow='0' type='1' />
+<edge node2='4' x='1047' y='126' color='#ff0000' spiked='1' id='1' node1='2' thickness='20' arrow='0' type='1' />
+<edge node2='5' x='1129' y='193' color='#ff0000' spiked='1' id='2' node1='2' thickness='20' arrow='0' type='1' />
+<edge node2='6' x='1161' y='264' color='#ff0000' spiked='1' id='3' node1='2' thickness='20' arrow='0' type='1' />
+<edge node2='7' x='691' y='305' color='#380952' spiked='0' id='4' node1='1' thickness='30' arrow='0' type='1' />
+<edge node2='8' x='547' y='155' color='#380952' spiked='1' id='5' node1='7' thickness='20' arrow='0' type='1' />
+<edge node2='9' x='441' y='205' color='#380952' spiked='1' id='6' node1='7' thickness='20' arrow='0' type='1' />
+<edge node2='10' x='377' y='282' color='#380952' spiked='1' id='7' node1='7' thickness='20' arrow='0' type='1' />
+<edge node2='11' x='446' y='347' color='#380952' spiked='1' id='8' node1='7' thickness='20' arrow='0' type='1' />
+<edge node2='13' x='591' y='484' color='#047619' spiked='0' id='9' node1='1' thickness='30' arrow='0' type='0' />
+<edge node2='14' x='300' y='508' color='#047619' spiked='1' id='10' node1='13' thickness='20' arrow='0' type='0' />
+<edge node2='15' x='289' y='556' color='#047619' spiked='1' id='12' node1='13' thickness='20' arrow='0' type='0' />
+<edge node2='16' x='284' y='605' color='#047619' spiked='1' id='13' node1='13' thickness='20' arrow='0' type='0' />
+<edge node2='17' x='335' y='638' color='#047619' spiked='1' id='14' node1='13' thickness='20' arrow='0' type='0' />
+<edge node2='19' x='847' y='638' color='#e3d05d' spiked='0' id='15' node1='1' thickness='30' arrow='0' type='1' />
+<edge node2='20' x='492' y='643' color='#e3d05d' spiked='1' id='16' node1='19' thickness='30' arrow='0' type='1' />
+<edge node2='21' x='604' y='750' color='#e3d05d' spiked='1' id='17' node1='19' thickness='30' arrow='0' type='1' />
+<edge node2='22' x='700' y='787' color='#e3d05d' spiked='1' id='18' node1='19' thickness='30' arrow='0' type='1' />
+<edge node2='23' x='826' y='844' color='#e3d05d' spiked='1' id='19' node1='19' thickness='30' arrow='0' type='1' />
+<edge node2='24' x='901' y='479' color='#002849' spiked='0' id='20' node1='1' thickness='30' arrow='0' type='0' />
+<edge node2='25' x='1193' y='523' color='#002849' spiked='1' id='21' node1='24' thickness='20' arrow='0' type='0' />
+<edge node2='27' x='1128' y='627' color='#002849' spiked='0' id='25' node1='24' thickness='20' arrow='0' type='0' />
+<edge node2='26' x='1219' y='593' color='#002849' spiked='1' id='27' node1='24' thickness='20' arrow='0' type='1' />
+</project>

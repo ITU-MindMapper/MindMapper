@@ -34,8 +34,10 @@ class View(object):
             self._controller.node_color_sel)
         self._main.rootObject().edge_color_sel.connect(
             self._controller.edge_color_sel)
-        self._main.rootObject().workspace_size_changed.connect(
-            self._controller.window_resize)
+        self._main.rootObject().workspace_height_changed.connect(
+            self._controller.workspace_height_changed)
+        self._main.rootObject().workspace_width_changed.connect(
+            self._controller.workspace_width_changed)
         self._main.rootObject().edge_type_sel.connect(
             self._controller.edge_type_sel)
         self._main.rootObject().node_shape_sel.connect(
