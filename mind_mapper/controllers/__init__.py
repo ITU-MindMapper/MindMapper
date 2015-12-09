@@ -46,11 +46,10 @@ class Controller(object):
         if(what == ""):
             os.remove("./temp")
         self.view_manager._main.rootObject().setProperty(
-            "workspaceWidth", self.project.workspace_width)
+            "workspaceHeight", int(self.project.workspace_height))
         self.view_manager._main.rootObject().setProperty(
-            "workspaceHeight", self.project.workspace_height)
-        self.window_resize(
-            self.project.workspace_width, self.project.workspace_height)
+            "workspaceWidth", int(self.project.workspace_width))
+
         # create views
         for id in self.project.nodes:
             self.nodeViews[id] = self.view_manager.create_node(
@@ -284,17 +283,21 @@ class Controller(object):
     def node_shape_sel(self, shape):
         self.node_shape = int(shape)
 
-    def window_resize(self, width, height):
+    def workspace_height_changed(self, height):
         self.project.workspace_height = int(height)
-        self.project.workspace_width = int(width)
-        logging.debug('New window size: [' +
-                      str(width) + ',' + str(height) + ']')
+        logging.debug('New window height: ' + str(height))
         for key, view in self.edgeViews.items():
-            view.rootObject().setProperty("workspaceWidth", str(width))
             view.rootObject().setProperty("workspaceHeight", str(height))
         for key, view in self.nodeViews.items():
-            view.rootObject().setProperty("workspaceWidth", str(width))
             view.rootObject().setProperty("workspaceHeight", str(height))
+
+    def workspace_width_changed(self, width):
+        self.project.workspace_width = int(width)
+        logging.debug('New window width: ' + str(width))
+        for key, view in self.edgeViews.items():
+            view.rootObject().setProperty("workspaceWidth", str(width))
+        for key, view in self.nodeViews.items():
+            view.rootObject().setProperty("workspaceWidth", str(width))
 
     def node_focus(self, id):
         self.active_node = self.project.nodes[int(id)]
