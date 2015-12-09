@@ -36,38 +36,41 @@ class Controller(object):
         self.edgeViews = {}
 
     def load(self, what):
-        try:
-            # open file and load project
-            if what != "":
-                xml = QFile(what.toLocalFile())
-            else:
-                xml = QFile("temp")
-            if xml.open(QFile.ReadOnly):
-                self.project.deserialize(fromstring(xml.readAll()))
-            if(what == ""):
-                os.remove("./temp")
-            # create views
-            for id in self.project.nodes:
-                self.nodeViews[id] = self.view_manager.create_node(
-                    self.project.nodes[id])
-                # node_ids should be biggest of loaded ids
-                if self.NODE_IDS <= id:
-                    self.NODE_IDS = id + 1
-            # create edges
-            for id in self.project.edges:
-                self.edgeViews[id] = self.view_manager.create_edge(
-                    self.project.edges[id],
-                    self.project.nodes[self.project.edges[id].node1],
-                    self.project.nodes[self.project.edges[id].node2])
-                # egde_ids should be biggest of loaded ids
-                if self.EDGE_IDS <= id:
-                    self.EDGE_IDS = id + 1
-            print("Loaded nodes: " + str(self.project.nodes))
-            print("Loaded NodeViews: " + str(self.nodeViews))
-            print("Loaded edges: " + str(self.project.edges))
-            print("Loaded EdgeViews: " + str(self.edgeViews))
-        except:
-            print("Nepodarilo sa nacitat subor")
+        # open file and load project
+        if what != "":
+            xml = QFile(what.toLocalFile())
+        else:
+            xml = QFile("temp")
+        if xml.open(QFile.ReadOnly):
+            self.project.deserialize(fromstring(xml.readAll()))
+        if(what == ""):
+            os.remove("./temp")
+        self.view_manager._main.rootObject().setProperty(
+            "workspaceWidth", self.project.workspace_width)
+        self.view_manager._main.rootObject().setProperty(
+            "workspaceHeight", self.project.workspace_height)
+        self.window_resize(
+            self.project.workspace_width, self.project.workspace_height)
+        # create views
+        for id in self.project.nodes:
+            self.nodeViews[id] = self.view_manager.create_node(
+                self.project.nodes[id])
+            # node_ids should be biggest of loaded ids
+            if self.NODE_IDS <= id:
+                self.NODE_IDS = id + 1
+        # create edges
+        for id in self.project.edges:
+            self.edgeViews[id] = self.view_manager.create_edge(
+                self.project.edges[id],
+                self.project.nodes[self.project.edges[id].node1],
+                self.project.nodes[self.project.edges[id].node2])
+            # egde_ids should be biggest of loaded ids
+            if self.EDGE_IDS <= id:
+                self.EDGE_IDS = id + 1
+        print("Loaded nodes: " + str(self.project.nodes))
+        print("Loaded NodeViews: " + str(self.nodeViews))
+        print("Loaded edges: " + str(self.project.edges))
+        print("Loaded EdgeViews: " + str(self.edgeViews))
 
     def exporting(self):
         try:

@@ -1,9 +1,10 @@
+from mind_mapper.models import Model
 from mind_mapper.models.edge import Edge
 from mind_mapper.models.node import Node
 import re
 
 
-class Project(object):
+class Project(Model):
 
     def __init__(self):
         self.nodes = {}
@@ -29,10 +30,11 @@ class Project(object):
             raise ValueError(
                 "Project shouldn't have text value! But has:\n'" +
                 xml.text + "'")
-        if xml.attrib.keys():
+        if xml.attrib.keys() == ["width", "height"]:
             raise AttributeError(
-                "Project shouldn't have attributes!" +
-                "\nDiff: " + str(xml.attrib.keys()))
+                "Project have only width and height attributes!" +
+                "\nDiff: " + str(self.attribute_diff(
+                    xml.attrib.keys(), ["width", "height"])))
         for node in xml.iterfind("node"):
             n = Node()
             n.deserialize(node)
@@ -43,3 +45,4 @@ class Project(object):
             self.edges[e.id] = e
         self.workspace_width = xml.attrib["width"]
         self.workspace_height = xml.attrib["height"]
+

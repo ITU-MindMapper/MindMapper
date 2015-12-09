@@ -57,6 +57,9 @@ Item {
     property alias connectingToX: connectionPointer.endX
     property alias connectingToY: connectionPointer.endY
 
+    property alias workspaceWidth: workspace.width
+    property alias workspaceHeight: workspace.height
+
     // Active node properties (set by controller)
     property color activeNodeColor
     property var activeNodeShape
