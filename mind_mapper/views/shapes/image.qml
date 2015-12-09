@@ -19,6 +19,7 @@ Item {
     property alias textFont:  text.textfont
     property alias textSize:  text.textsize
     property alias textColor: text.textcolor
+    property alias inputting: text.inputting
 
     signal node_delete(var id)
     signal node_position_changed(var id, var x, var y)
