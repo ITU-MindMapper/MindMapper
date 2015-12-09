@@ -58,9 +58,10 @@ class View(object):
             self._controller.hide_edge_controls)
         self._main.rootObject().exporting.connect(
             self._controller.exporting)
-
-        self._main.setProperty("width", 1000)
-        self._main.setProperty("height", 800)
+        self._main.setProperty(
+            "width", self._controller.project.workspace_width)
+        self._main.setProperty(
+            "height", self._controller.project.workspace_height)
         self._main.show()
 
     def run(self):
