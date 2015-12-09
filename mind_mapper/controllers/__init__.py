@@ -246,6 +246,9 @@ class Controller(object):
             "connecting", False)
         self.view_manager._main.rootObject().setProperty(
             "hasActiveNode", False)
+        if (self.active_node is not None):
+            self.nodeViews[self.active_node.id].rootObject().setProperty(
+                "inputting", False)
         self.active_node = None
         self.edge_transfer_active_to(None)
 

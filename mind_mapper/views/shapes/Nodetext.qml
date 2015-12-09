@@ -14,13 +14,19 @@ Item {
 
     onInputtingChanged: {
         if(inputting == true){
-            inputField.focus = true
-            inputField.visible = true
-            inputField.text = text.text
-            text.text = ""
+            inputField.forceActiveFocus();
+            inputField.visible = true;
+            if((inputField.text != "")&&(text.text == ""))
+                text.text = inputField.text
+            inputField.text = text.text;
+            text.visible = false;
         }
-        else 
-            container.textChanged(text.text)
+        else {
+            text.text = inputField.text
+            inputField.visible = false
+            text.visible = true
+            container.textChanged(text.text);
+        }
     }
 
     // Text content
@@ -45,14 +51,8 @@ Item {
         color: text.color
         font.family: text.font.family
         font.pointSize: text.font.pointSize
-        focus: true
         visible: false
         
-        onEditingFinished: {
-            text.text = inputField.text
-            inputField.visible = false
-            inputField.focus = false
-            container.inputting = false
-        }
+        onEditingFinished: container.inputting = false
     }
 }

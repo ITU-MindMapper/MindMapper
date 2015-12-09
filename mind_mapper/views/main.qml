@@ -240,7 +240,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         animationDuration: 200
         opacity: 0
-        z: 4
+        z: 5
 
         onClicked: {
             mainWindow.node_color_sel(color);
@@ -256,7 +256,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         animationDuration: 200
         opacity: 0
-        z: 4
+        z: 5
 
         onClicked: {
             mainWindow.edge_color_sel(color);
@@ -272,7 +272,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         animationDuration: 200
         opacity: 0
-        z: 4
+        z: 5
 
         onClicked: {
             mainWindow.node_text_color_sel(color);
@@ -287,7 +287,7 @@ Item {
         anchors.rightMargin: menu.width
         animationDuration: 200
         opacity: 0
-        z: 4
+        z: 5
         y: edgeTypeSelButton.y
 
         onClicked: {
@@ -322,7 +322,7 @@ Item {
         anchors.rightMargin: menu.width
         animationDuration: 200
         opacity: 0
-        z: 4
+        z: 5
         y: nodeShapeSelButton.y
 
         onClicked: {
@@ -357,25 +357,28 @@ Item {
             contentItem: workspace
             style: ScrollViewStyle {
                     handle: Item {
-                        property var scale: zoomScale.xScale
                         implicitWidth: 14
                         implicitHeight: 14                    
                         Rectangle {
                             color: "#424246"
                             anchors.fill: parent
-                        }
+                            }
                     }
                     scrollBarBackground: Item {
                         implicitWidth: 14
                         implicitHeight: 14
                         visible: styleData.hovered
-                    }
-                    incrementControl: Rectangle {}
-                    decrementControl: Rectangle {}
+                        }
+                    incrementControl: Rectangle {id: incrementControl}
+                    
+                    decrementControl: Rectangle {id: decrementControl}
                     corner: Rectangle {}
                 }
 
             Rectangle {
+                id: abstractor
+                x: 0
+                y: 0
                 width: workspace.width * zoomScale.xScale
                 height: workspace.height * zoomScale.yScale
                 color: "transparent"
@@ -383,7 +386,8 @@ Item {
                 Rectangle {
                     id: workspace
                     objectName: "workspace"
-                    anchors.centerIn: parent
+                    x: 0
+                    y: 0
                     width: 800
                     height: 600
                     color: "white"
@@ -491,18 +495,18 @@ Item {
                             if((wheel.angleDelta.y < 0)&&(zoomScale.xScale <= 2.95)){
                                 zoomIndicator.show = true
                                 zoomIndicator.restart()
+                                zoomScale.origin.x = wheel.x
+                                zoomScale.origin.y = wheel.y                               
                                 zoomScale.xScale += 0.1
                                 zoomScale.yScale += 0.1
-                                zoomScale.origin.x = wheel.x
-                                zoomScale.origin.y = wheel.y
                             }
                             else if((wheel.angleDelta.y > 0)&&(zoomScale.yScale >= 0.35)){
                                 zoomIndicator.show = true
                                 zoomIndicator.restart()
-                                zoomScale.xScale -= 0.1
-                                zoomScale.yScale -= 0.1
                                 zoomScale.origin.x = wheel.x
                                 zoomScale.origin.y = wheel.y
+                                zoomScale.xScale -= 0.1
+                                zoomScale.yScale -= 0.1
                             }
                         }
 
