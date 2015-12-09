@@ -161,6 +161,3 @@ class View(object):
 
     def node_update(self, node):
         pass
-
-    def clicked(self, x):
-        print(x)

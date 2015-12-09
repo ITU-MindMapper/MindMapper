@@ -66,10 +66,6 @@ class Controller(object):
             # egde_ids should be biggest of loaded ids
             if self.EDGE_IDS <= id:
                 self.EDGE_IDS = id + 1
-        print("Loaded nodes: " + str(self.project.nodes))
-        print("Loaded NodeViews: " + str(self.nodeViews))
-        print("Loaded edges: " + str(self.project.edges))
-        print("Loaded EdgeViews: " + str(self.edgeViews))
 
     def exporting(self):
         try:
@@ -113,7 +109,6 @@ class Controller(object):
         self.node_focus(node.id)
 
     def create_edge(self, node1, node2):
-        print(node1.id, node2.id)
         thickness = self.edge_thickness
         if thickness == 0:
             thickness = 10
