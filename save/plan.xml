@@ -1,0 +1,195 @@
+<project width='1800' height='1800'>
+<node height='100' id='1' width='400' y='227' shape='0' x='949' background='#000000'>
+<text font='Sans Serif' color='#ffffff' size='25'>
+Navrhnut testy
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='100' id='2' width='400' y='534' shape='0' x='963' background='#000000'>
+<text font='Sans Serif' color='#ffffff' size='25'>
+Popisat backend do TZ
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='100' id='3' width='400' y='926' shape='0' x='1005' background='#000000'>
+<text font='Sans Serif' color='#ffffff' size='25'>
+Popisat frontend do TZ
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='100' id='4' width='400' y='1055' shape='0' x='453' background='#000000'>
+<text font='Sans Serif' color='#ffffff' size='25'>
+Pripravit prezentacie
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='100' id='5' width='250' y='125' shape='1' x='1479' background='#008547'>
+<text font='Sans Serif' color='#9dd2e7' size='25'>
+Protokol
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='100' id='6' width='250' y='263' shape='1' x='1481' background='#008547'>
+<text font='Sans Serif' color='#9dd2e7' size='25'>
+Anketa
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='150' id='7' width='250' y='421' shape='1' x='1493' background='#008547'>
+<text font='Sans Serif' color='#9dd2e7' size='25'>
+Zhodnotenie vysledkov
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='50' id='8' width='100' y='187' shape='0' x='465' background='#ffffff'>
+<text font='Sans Serif' color='#000000' size='25'>
+FILIP
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='50' id='9' width='100' y='426' shape='0' x='666' background='#ffffff'>
+<text font='Sans Serif' color='#000000' size='25'>
+MIRO
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='50' id='10' width='120' y='726' shape='0' x='615' background='#ffffff'>
+<text font='Sans Serif' color='#000000' size='25'>
+LUKAS
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='50' id='11' width='120' y='846' shape='0' x='260' background='#ffffff'>
+<text font='Sans Serif' color='#000000' size='25'>
+VSETCI
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='100' id='12' width='250' y='579' shape='1' x='1554' background='#e3d05d'>
+<text font='Sans Serif' color='#58011c' size='25'>
+MVC
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='100' id='13' width='250' y='723' shape='1' x='1549' background='#e3d05d'>
+<text font='Sans Serif' color='#58011c' size='25'>
+PyQt5
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='100' id='14' width='250' y='851' shape='1' x='1562' background='#e3d05d'>
+<text font='Sans Serif' color='#58011c' size='25'>
+XML
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='100' id='15' width='250' y='1069' shape='1' x='1501' background='#61635c'>
+<text font='Sans Serif' color='#ffffff' size='25'>
+Workspace
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='100' id='16' width='250' y='1184' shape='1' x='1471' background='#61635c'>
+<text font='Sans Serif' color='#ffffff' size='25'>
+Ovladanie
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='100' id='17' width='250' y='1314' shape='1' x='1410' background='#61635c'>
+<text font='Sans Serif' color='#ffffff' size='25'>
+Toolbox
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='100' id='19' width='250' y='1393' shape='1' x='1192' background='#61635c'>
+<text font='Sans Serif' color='#ffffff' size='25'>
+Notifikacie
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='100' id='20' width='250' y='1357' shape='1' x='181' background='#e93f1e'>
+<text font='Sans Serif' color='#ffffff' size='25'>
++-4min
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='100' id='21' width='250' y='1356' shape='1' x='461' background='#e93f1e'>
+<text font='Sans Serif' color='#ffffff' size='25'>
+Strucne
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='100' id='22' width='250' y='1358' shape='1' x='745' background='#e93f1e'>
+<text font='Sans Serif' color='#ffffff' size='25'>
+Vystizne
+</text>
+<annotation>
+
+</annotation>
+</node>
+<node height='320' id='24' width='400' y='435' shape='2' x='248' background='../../../save/resources/plan.jpg'>
+<text font='Sans Serif' color='#000000' size='25'>
+
+</text>
+<annotation>
+
+</annotation>
+</node>
+<edge arrow='0' thickness='50' id='8' y='176' type='0' spiked='1' node1='1' color='#58011c' node2='5' x='1214' />
+<edge arrow='0' thickness='50' id='9' y='245' type='0' spiked='1' node1='1' color='#58011c' node2='6' x='1215' />
+<edge arrow='0' thickness='50' id='10' y='324' type='0' spiked='1' node1='1' color='#58011c' node2='7' x='1221' />
+<edge arrow='0' thickness='50' id='11' y='568' type='0' spiked='1' node1='2' color='#58011c' node2='12' x='1237' />
+<edge arrow='0' thickness='50' id='14' y='760' type='1' spiked='1' node1='2' color='#58011c' node2='14' x='1249' />
+<edge arrow='0' thickness='50' id='16' y='654' type='1' spiked='1' node1='2' color='#58011c' node2='13' x='1268' />
+<edge arrow='0' thickness='50' id='17' y='1020' type='1' spiked='1' node1='3' color='#58011c' node2='15' x='1263' />
+<edge arrow='0' thickness='50' id='18' y='1054' type='1' spiked='1' node1='3' color='#58011c' node2='16' x='1161' />
+<edge arrow='0' thickness='50' id='19' y='1105' type='1' spiked='1' node1='3' color='#58011c' node2='17' x='1113' />
+<edge arrow='0' thickness='50' id='21' y='1159' type='1' spiked='1' node1='3' color='#58011c' node2='19' x='1059' />
+<edge arrow='0' thickness='50' id='22' y='1183' type='1' spiked='1' node1='4' color='#58011c' node2='20' x='203' />
+<edge arrow='0' thickness='50' id='23' y='1205' type='1' spiked='1' node1='4' color='#58011c' node2='21' x='457' />
+<edge arrow='0' thickness='50' id='24' y='1191' type='1' spiked='1' node1='4' color='#58011c' node2='22' x='680' />
+<edge arrow='0' thickness='100' id='26' y='238' type='1' spiked='1' node1='24' color='#380952' node2='1' x='482' />
+<edge arrow='0' thickness='100' id='27' y='465' type='1' spiked='1' node1='24' color='#380952' node2='2' x='642' />
+<edge arrow='0' thickness='100' id='28' y='678' type='1' spiked='1' node1='24' color='#380952' node2='3' x='690' />
+<edge arrow='0' thickness='100' id='29' y='813' type='1' spiked='1' node1='24' color='#380952' node2='4' x='354' />
+</project>
