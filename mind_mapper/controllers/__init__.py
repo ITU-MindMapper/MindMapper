@@ -40,11 +40,11 @@ class Controller(object):
         if what != "":
             xml = QFile(what.toLocalFile())
         else:
-            xml = QFile("temp")
+            xml = QFile("save/temp")
         if xml.open(QFile.ReadOnly):
             self.project.deserialize(fromstring(xml.readAll()))
         if(what == ""):
-            os.remove("./temp")
+            os.remove("./save/temp")
         self.view_manager._main.rootObject().setProperty(
             "workspaceHeight", int(self.project.workspace_height))
         self.view_manager._main.rootObject().setProperty(
@@ -79,11 +79,11 @@ class Controller(object):
         except:
             pass
         where = "save/" + where
-        if where != "":
+        if where != "save/":
             if where[-4:] != ".xml":
                 where += ".xml"
         else:
-            where = "temp"
+            where += "temp"
         with open(where, "w") as out:
             out.write(str(self.project))
 
