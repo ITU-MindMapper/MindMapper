@@ -217,7 +217,7 @@ Item {
         rotation: 0
         onClicked: {
             workspace.width += 100;
-            mainWindow.workspace_size_changed(workspace.width, workspace.height)
+            mainWindow.workspace_width_changed(workspace.width)
         }
     }
 
@@ -228,7 +228,7 @@ Item {
         rotation: 90
         onClicked: {
             workspace.height += 100;
-            mainWindow.workspace_size_changed(workspace.width, workspace.height)
+            mainWindow.workspace_height_changed(workspace.height)
         }
     }
 
